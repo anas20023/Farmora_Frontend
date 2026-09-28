@@ -17,7 +17,30 @@ export const auth = betterAuth({
         enabled: true,
         autoSignIn: false,
     },
-    plugins: [username()],
+    plugins: [
+        username({
+            displayUsername: false,
+            immutableUsername: true,
+            minUsernameLength: 5,
+            maxUsernameLength: 100,
+            usernameValidator: (username) => {
+                if (username === 'admin') {
+                    return false;
+                }
+                return true;
+            },
+            displayUsernameValidator: (displayUsername) => {
+                return /^[a-zA-Z0-9_-]+$/.test(displayUsername);
+            },
+            usernameNormalization: (username) => {
+                return username
+                    .toLowerCase()
+                    .replaceAll('0', 'o')
+                    .replaceAll('3', 'e')
+                    .replaceAll('4', 'a');
+            },
+        }),
+    ],
     advanced: {
         database: {
             joins: true,
