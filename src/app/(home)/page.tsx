@@ -1,9 +1,11 @@
+import Navbar from "@/components/Navbar";
 import { Button } from "@heroui/react";
 
 export default function Home() {
   return (
     <>
       <div className="flex flex-row gap-4 m-4">
+        <Navbar/>
         <Button variant="primary" >
           Click me
         </Button>
