@@ -1,4 +1,4 @@
-import { createAuthClient } from 'better-auth/client';
+import { createAuthClient } from 'better-auth/react';
 import {
     usernameClient,
     adminClient,
@@ -23,3 +23,4 @@ export const authClient = createAuthClient({
         }),
     ],
 });
+export const { signIn, signUp, useSession } = createAuthClient()
