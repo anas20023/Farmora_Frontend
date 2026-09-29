@@ -13,6 +13,17 @@ export const auth = betterAuth({
         type: 'postgres',
         schemaName: 'auth',
     },
+    user: {
+        additionalFields: {
+            role: {
+                type: 'string',
+                required: false,
+                defaultValue: 'user',
+                input: true, // Set to true if the field can be passed during sign-up
+                returned: true, // Set to true if it should be returned in API responses
+            },
+        },
+    },
     emailAndPassword: {
         enabled: true,
         requireEmailVerification: true,
@@ -41,7 +52,7 @@ export const auth = betterAuth({
                     .replaceAll('4', 'a');
             },
         }),
-        admin()
+        admin(),
     ],
     advanced: {
         database: {
