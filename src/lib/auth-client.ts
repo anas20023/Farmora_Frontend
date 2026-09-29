@@ -1,5 +1,9 @@
 import { createAuthClient } from 'better-auth/client';
-import { usernameClient, adminClient, inferAdditionalFields } from 'better-auth/client/plugins';
+import {
+    usernameClient,
+    adminClient,
+    inferAdditionalFields,
+} from 'better-auth/client/plugins';
 
 export const authClient = createAuthClient({
     baseURL: process.env.BETTER_AUTH_URL,
@@ -10,6 +14,10 @@ export const authClient = createAuthClient({
             user: {
                 role: {
                     type: 'string',
+                    required: false,
+                    defaultValue: 'user',
+                    input: true, // Set to true if the field can be passed during sign-up
+                    returned: true, // Set to true if it should be returned in API responses
                 },
             },
         }),
