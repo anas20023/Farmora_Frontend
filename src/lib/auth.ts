@@ -1,5 +1,5 @@
 import { betterAuth } from 'better-auth';
-import { username } from 'better-auth/plugins';
+import { admin, username } from 'better-auth/plugins';
 import { PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
 
@@ -15,6 +15,7 @@ export const auth = betterAuth({
     },
     emailAndPassword: {
         enabled: true,
+        requireEmailVerification: true,
         autoSignIn: false,
     },
     plugins: [
@@ -40,6 +41,7 @@ export const auth = betterAuth({
                     .replaceAll('4', 'a');
             },
         }),
+        admin()
     ],
     advanced: {
         database: {
