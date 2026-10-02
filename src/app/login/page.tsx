@@ -72,7 +72,7 @@ export default function LoginPage() {
         email: email.trim(),
         password: password,
         rememberMe: rememberMe,
-        callbackURL: "/login",
+        callbackURL: "/",
       }, {
         onError: (ctx) => {
           console.log(ctx)
