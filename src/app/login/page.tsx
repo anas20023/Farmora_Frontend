@@ -65,7 +65,7 @@ export default function LoginPage() {
     if (!email || !password) return;
 
     setIsLoading(true);
-
+    
     try {
       // Attempt login via better-auth client if available
       await authClient.signIn.email({
@@ -86,6 +86,7 @@ export default function LoginPage() {
     } catch(err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
     }
+    setIsLoading(false);
   };
 
   const handleGoogleLogin = async () => {
