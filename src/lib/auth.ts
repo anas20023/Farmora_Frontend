@@ -17,8 +17,14 @@ export const auth = betterAuth({
         additionalFields: {
             role: {
                 type: 'string',
-                required: false,
-                defaultValue: 'user',
+                required: true,
+                defaultValue:"user",
+                input: false, // Set to true if the field can be passed during sign-up
+                returned: true, // Set to true if it should be returned in API responses
+            },
+            wished_role: {
+                type: 'string',
+                required: true,
                 input: true, // Set to true if the field can be passed during sign-up
                 returned: true, // Set to true if it should be returned in API responses
             },
@@ -26,7 +32,7 @@ export const auth = betterAuth({
     },
     emailAndPassword: {
         enabled: true,
-        requireEmailVerification: true,
+        // requireEmailVerification: true,
         autoSignIn: false,
     },
     plugins: [

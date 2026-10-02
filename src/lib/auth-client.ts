@@ -14,8 +14,14 @@ export const authClient = createAuthClient({
             user: {
                 role: {
                     type: 'string',
-                    required: false,
+                    required: true,
                     defaultValue: 'user',
+                    input: false, // Set to true if the field can be passed during sign-up
+                    returned: true, // Set to true if it should be returned in API responses
+                },
+                wished_role: {
+                    type: 'string',
+                    required: true,
                     input: true, // Set to true if the field can be passed during sign-up
                     returned: true, // Set to true if it should be returned in API responses
                 },
@@ -23,4 +29,4 @@ export const authClient = createAuthClient({
         }),
     ],
 });
-export const { signIn, signUp, useSession } = createAuthClient()
+export const { signIn, signUp, useSession } = createAuthClient();

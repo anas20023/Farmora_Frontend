@@ -7,7 +7,6 @@ import { Button, Separator } from "@heroui/react";
 import {
   ArrowLeft,
   Check,
-  CheckCircle2,
   Eye,
   EyeOff,
   Globe,
@@ -23,6 +22,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 type UserRole = "farmer" | "buyer";
 
@@ -41,7 +41,6 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isDark, setIsDark] = useState(false);
-  const [registeredSuccess, setRegisteredSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   // Initialize and synchronize dark/light theme matching globals.css
@@ -102,27 +101,24 @@ export default function RegisterPage() {
 
     setIsLoading(true);
 
-    try {
-      // Attempt signup via better-auth client
-      if (authClient?.signUp?.email) {
-        await authClient.signUp.email({
-          name: name.trim(),
-          email: email.trim(),
-          password,
-          role,
-        }).catch(() => {
-          // Graceful fallback if backend endpoints are not live yet
-        });
+
+     await authClient.signUp.email({
+      name: name.trim(),
+      email: email.trim(),
+      wished_role: role.trim(),
+      password: password,
+      callbackURL: "/login",
+    },{
+      onSuccess:(ctx)=>{
+        console.log(ctx)
+        toast.success("Registeration Successful")
+        router.push('/login')
+      },
+      onError:(ctx)=>{
+        toast.error(ctx.error.message)
       }
-      setRegisteredSuccess(true);
-    } catch {
-      // Graceful fallback
-    } finally {
-      // Per user requirement: On click join/login, navigate to /login route
-      setTimeout(() => {
-        router.push("/login");
-      }, 700);
-    }
+    });
+
   };
 
   const handleGoogleJoin = async () => {
@@ -229,14 +225,6 @@ export default function RegisterPage() {
                 {errorMessage}
               </div>
             ) : null}
-
-            {registeredSuccess ? (
-              <div className="mb-4 flex items-center gap-2.5 rounded-lg border border-success/40 bg-success/10 p-3 text-xs text-success sm:text-sm">
-                <CheckCircle2 aria-hidden="true" className="size-4 shrink-0" />
-                <span>Account created successfully! Redirecting to login...</span>
-              </div>
-            ) : null}
-
             <form onSubmit={handleRegister} className="space-y-4" noValidate={false}>
               {/* Role Selection Options: Farmer or Buyer */}
               <div className="space-y-2">
@@ -248,20 +236,18 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setRole("farmer")}
-                    className={`relative flex flex-col items-start rounded-xl border p-3.5 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${
-                      role === "farmer"
-                        ? "border-accent bg-accent/10 shadow-sm ring-1 ring-accent"
-                        : "border-border bg-field-background hover:bg-surface-secondary"
-                    }`}
+                    className={`relative flex flex-col items-start rounded-xl border p-3.5 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${role === "farmer"
+                      ? "border-accent bg-accent/10 shadow-sm ring-1 ring-accent"
+                      : "border-border bg-field-background hover:bg-surface-secondary"
+                      }`}
                   >
                     <div className="flex w-full items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span
-                          className={`grid size-8 place-items-center rounded-lg ${
-                            role === "farmer"
-                              ? "bg-accent text-accent-foreground"
-                              : "bg-surface-secondary text-muted"
-                          }`}
+                          className={`grid size-8 place-items-center rounded-lg ${role === "farmer"
+                            ? "bg-accent text-accent-foreground"
+                            : "bg-surface-secondary text-muted"
+                            }`}
                         >
                           <Tractor aria-hidden="true" className="size-4" />
                         </span>
@@ -284,20 +270,18 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setRole("buyer")}
-                    className={`relative flex flex-col items-start rounded-xl border p-3.5 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${
-                      role === "buyer"
-                        ? "border-accent bg-accent/10 shadow-sm ring-1 ring-accent"
-                        : "border-border bg-field-background hover:bg-surface-secondary"
-                    }`}
+                    className={`relative flex flex-col items-start rounded-xl border p-3.5 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${role === "buyer"
+                      ? "border-accent bg-accent/10 shadow-sm ring-1 ring-accent"
+                      : "border-border bg-field-background hover:bg-surface-secondary"
+                      }`}
                   >
                     <div className="flex w-full items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span
-                          className={`grid size-8 place-items-center rounded-lg ${
-                            role === "buyer"
-                              ? "bg-accent text-accent-foreground"
-                              : "bg-surface-secondary text-muted"
-                          }`}
+                          className={`grid size-8 place-items-center rounded-lg ${role === "buyer"
+                            ? "bg-accent text-accent-foreground"
+                            : "bg-surface-secondary text-muted"
+                            }`}
                         >
                           <ShoppingBag aria-hidden="true" className="size-4" />
                         </span>
@@ -412,24 +396,20 @@ export default function RegisterPage() {
                   <div className="pt-1">
                     <div className="flex h-1.5 w-full gap-1 overflow-hidden rounded-full bg-surface-secondary">
                       <div
-                        className={`h-full flex-1 transition-all ${
-                          passwordStrength >= 1 ? "bg-danger" : "bg-transparent"
-                        }`}
+                        className={`h-full flex-1 transition-all ${passwordStrength >= 1 ? "bg-danger" : "bg-transparent"
+                          }`}
                       />
                       <div
-                        className={`h-full flex-1 transition-all ${
-                          passwordStrength >= 2 ? "bg-warning" : "bg-transparent"
-                        }`}
+                        className={`h-full flex-1 transition-all ${passwordStrength >= 2 ? "bg-warning" : "bg-transparent"
+                          }`}
                       />
                       <div
-                        className={`h-full flex-1 transition-all ${
-                          passwordStrength >= 3 ? "bg-accent" : "bg-transparent"
-                        }`}
+                        className={`h-full flex-1 transition-all ${passwordStrength >= 3 ? "bg-accent" : "bg-transparent"
+                          }`}
                       />
                       <div
-                        className={`h-full flex-1 transition-all ${
-                          passwordStrength >= 4 ? "bg-accent" : "bg-transparent"
-                        }`}
+                        className={`h-full flex-1 transition-all ${passwordStrength >= 4 ? "bg-accent" : "bg-transparent"
+                          }`}
                       />
                     </div>
                     <div className="mt-1 flex justify-between text-[11px] text-muted">
