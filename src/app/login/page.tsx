@@ -65,7 +65,7 @@ export default function LoginPage() {
     if (!email || !password) return;
 
     setIsLoading(true);
-    
+
     try {
       // Attempt login via better-auth client if available
       await authClient.signIn.email({
@@ -73,20 +73,21 @@ export default function LoginPage() {
         password: password,
         rememberMe: rememberMe,
         callbackURL: "/login",
-      },{
-        onError:(ctx)=>{
+      }, {
+        onError: (ctx) => {
           console.log(ctx)
           toast.error(ctx.error.message)
         },
-        onSuccess:(ctx)=>{
+        onSuccess: (ctx) => {
           console.log(ctx.response)
           toast.success("Login Succesful")
         }
       });
-    } catch(err) {
+      setIsLoading(false);
+    } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong")
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const handleGoogleLogin = async () => {
