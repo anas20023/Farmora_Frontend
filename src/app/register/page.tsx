@@ -9,7 +9,6 @@ import {
   Check,
   Eye,
   EyeOff,
-  Globe,
   Lock,
   Mail,
   Moon,
@@ -23,6 +22,7 @@ import {
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
+import { FcGoogle } from "react-icons/fc";
 
 type UserRole = "farmer" | "buyer";
 
@@ -100,24 +100,25 @@ export default function RegisterPage() {
     }
 
     setIsLoading(true);
-
-
-     await authClient.signUp.email({
+    await authClient.signUp.email({
       name: name.trim(),
       email: email.trim(),
       wished_role: role.trim(),
       password: password,
       callbackURL: "/login",
-    },{
-      onSuccess:(ctx)=>{
+    }, {
+      onSuccess: (ctx) => {
         console.log(ctx)
         toast.success("Registeration Successful")
         router.push('/login')
       },
-      onError:(ctx)=>{
+      onError: (ctx) => {
+        console.log(ctx)
         toast.error(ctx.error.message)
       }
+
     });
+    setIsLoading(false);
 
   };
 
@@ -499,7 +500,7 @@ export default function RegisterPage() {
                 </span>
               ) : (
                 <span className="flex items-center justify-center gap-2.5">
-                  <Globe aria-hidden="true" className="size-4 text-accent" />
+                  <FcGoogle aria-hidden="true" className="size-4 text-accent" />
                   <span>Continue with Google</span>
                 </span>
               )}

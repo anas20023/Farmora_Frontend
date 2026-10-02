@@ -10,18 +10,18 @@ import {
   CheckCircle2,
   Eye,
   EyeOff,
-  Globe,
   KeyRound,
   Lock,
   LogIn,
   Mail,
   Moon,
-  ShieldCheck,
   Sprout,
   Sun,
   X,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { FcGoogle } from "react-icons/fc";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -68,21 +68,23 @@ export default function LoginPage() {
 
     try {
       // Attempt login via better-auth client if available
-      if (authClient?.signIn?.email) {
-        await authClient.signIn.email({
-          email,
-          password,
-        }).catch(() => {
-          // Continue gracefully to route navigation as requested
-        });
-      }
-    } catch {
-      // Graceful fallback
-    } finally {
-      // Per user requirement: "On click join/login, navigate to / route"
-      setTimeout(() => {
-        router.push("/");
-      }, 350);
+      await authClient.signIn.email({
+        email: email.trim(),
+        password: password,
+        rememberMe: rememberMe,
+        callbackURL: "/login",
+      },{
+        onError:(ctx)=>{
+          console.log(ctx)
+          toast.error(ctx.error.message)
+        },
+        onSuccess:(ctx)=>{
+          console.log(ctx.response)
+          toast.success("Login Succesful")
+        }
+      });
+    } catch(err) {
+      toast.error(err instanceof Error ? err.message : "Something went wrong")
     }
   };
 
@@ -173,10 +175,6 @@ export default function LoginPage() {
 
             <p className="mt-1 text-sm font-medium text-foreground/90 sm:text-base">
               Smart Agriculture Marketplace
-            </p>
-
-            <p className="mt-1 max-w-xs text-xs text-muted sm:max-w-sm sm:text-sm">
-              Connecting farmers, distributors, and buyers with transparent, real-time agro trading
             </p>
           </div>
 
@@ -334,7 +332,7 @@ export default function LoginPage() {
                 </span>
               ) : (
                 <span className="flex items-center justify-center gap-2.5">
-                  <Globe aria-hidden="true" className="size-4 text-accent" />
+                  <FcGoogle aria-hidden="true" className="size-4 text-accent" />
                   <span>Continue with Google</span>
                 </span>
               )}
@@ -351,10 +349,6 @@ export default function LoginPage() {
                   Join Farmora today
                 </Link>
               </p>
-              <div className="flex items-center gap-1.5 text-muted/70">
-                <ShieldCheck aria-hidden="true" className="size-3.5 text-accent" />
-                <span>Protected with smart marketplace security</span>
-              </div>
             </div>
           </div>
         </div>

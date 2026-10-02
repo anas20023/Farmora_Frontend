@@ -18,7 +18,7 @@ export const auth = betterAuth({
             role: {
                 type: 'string',
                 required: true,
-                defaultValue:"user",
+                defaultValue: 'user',
                 input: false, // Set to true if the field can be passed during sign-up
                 returned: true, // Set to true if it should be returned in API responses
             },
@@ -32,8 +32,11 @@ export const auth = betterAuth({
     },
     emailAndPassword: {
         enabled: true,
-        // requireEmailVerification: true,
+        requireEmailVerification: true,
         autoSignIn: false,
+        onExistingUserSignUp: async ({ user }, request) => {
+           // Email send later.
+        },
     },
     plugins: [
         username({
