@@ -81,6 +81,7 @@ export default function LoginPage() {
         onSuccess: (ctx) => {
           console.log(ctx.response)
           toast.success("Login Succesful")
+          router.push('/login')
         }
       });
       setIsLoading(false);
