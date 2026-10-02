@@ -32,7 +32,7 @@ export const auth = betterAuth({
     },
     emailAndPassword: {
         enabled: true,
-        requireEmailVerification: true,
+        requireEmailVerification: false,
         autoSignIn: false,
         onExistingUserSignUp: async ({ user }, request) => {
            // Email send later.
