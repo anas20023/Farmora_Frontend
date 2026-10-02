@@ -345,7 +345,7 @@ export default function LoginPage() {
               <p>
                 Don&apos;t have an account?{" "}
                 <Link
-                  href="/login"
+                  href="/register"
                   className="font-medium text-accent hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus"
                 >
                   Join Farmora today
