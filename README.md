@@ -6,13 +6,13 @@
 
 Role-based web interface for Farmers, Customers, and Administrators, built with Next.js, TypeScript, and Tailwind CSS.
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/OWNER/farmora-frontend/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/OWNER/farmora-frontend/actions)
-[![License](https://img.shields.io/github/license/OWNER/farmora-frontend?style=for-the-badge)](./LICENSE)
-[![Last Commit](https://img.shields.io/github/last-commit/OWNER/farmora-frontend?style=for-the-badge&logo=git&logoColor=white)](https://github.com/OWNER/farmora-frontend/commits/main)
-[![Issues](https://img.shields.io/github/issues/OWNER/farmora-frontend?style=for-the-badge)](https://github.com/OWNER/farmora-frontend/issues)
-[![Pull Requests](https://img.shields.io/github/issues-pr/OWNER/farmora-frontend?style=for-the-badge)](https://github.com/OWNER/farmora-frontend/pulls)
-[![Contributors](https://img.shields.io/github/contributors/OWNER/farmora-frontend?style=for-the-badge)](https://github.com/OWNER/farmora-frontend/graphs/contributors)
-[![Stars](https://img.shields.io/github/stars/OWNER/farmora-frontend?style=for-the-badge)](https://github.com/OWNER/farmora-frontend/stargazers)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/anas20023/Farmora-Frontend/ci.yml?branch=master&style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/anas20023/Farmora_Frontend/actions)
+[![License](https://img.shields.io/github/license/anas20023/Farmora-Frontend?style=for-the-badge)](./LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/anas20023/Farmora-Frontend?style=for-the-badge&logo=git&logoColor=white)](https://github.com/anas20023/Farmora_Frontend/commits/master)
+[![Issues](https://img.shields.io/github/issues/anas20023/Farmora-Frontend?style=for-the-badge)](https://github.com/anas20023/Farmora_Frontend/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/anas20023/Farmora-Frontend?style=for-the-badge)](https://github.com/anas20023/Farmora_Frontend/pulls)
+[![Contributors](https://img.shields.io/github/contributors/anas20023/Farmora-Frontend?style=for-the-badge)](https://github.com/anas20023/Farmora_Frontend/graphs/contributors)
+[![Stars](https://img.shields.io/github/stars/anas20023/Farmora-Frontend?style=for-the-badge)](https://github.com/anas20023/Farmora_Frontend/stargazers)
 
 ![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=nextdotjs&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
@@ -41,7 +41,7 @@ Role-based web interface for Farmers, Customers, and Administrators, built with 
 
 **Farmora** is a digital agriculture ecosystem that connects farmers directly with customers while providing data-driven decision support through farm management tools, IoT monitoring, machine learning predictions, and an AI assistant (**AgriAI**).
 
-This repository contains the **frontend web application**. It consumes the [Farmora Backend API](https://github.com/OWNER/farmora-backend) over REST and WebSocket and delivers a dedicated, role-specific experience for each user group:
+This repository contains the **frontend web application**. It consumes the [Farmora Backend API](https://github.com/anas20023/farmora-backend) over REST and WebSocket and delivers a dedicated, role-specific experience for each user group:
 
 | Role | Experience |
 |------|------------|
@@ -115,14 +115,14 @@ This repository contains the **frontend web application**. It consumes the [Farm
 
 - **Node.js** ≥ 20 (LTS recommended)
 - **pnpm** ≥ 9 (or npm / yarn)
-- A running instance of the [Farmora Backend](https://github.com/OWNER/farmora-backend)
+- A running instance of the [Farmora Backend](https://github.com/anas20023/farmora-backend)
 
 ### Installation
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/OWNER/farmora-frontend.git
-cd farmora-frontend
+git clone https://github.com/anas20023/Farmora_Frontend.git
+cd Farmora-Frontend
 
 # 2. Install dependencies
 pnpm install
@@ -180,7 +180,7 @@ NEXT_PUBLIC_PAYMENT_PUBLIC_KEY=
 ## 🗂️ Project Structure
 
 ```
-farmora-frontend/
+Farmora-Frontend/
 ├── public/                     # Static assets
 ├── src/
 │   ├── app/                    # Next.js App Router
@@ -240,7 +240,7 @@ farmora-frontend/
 | AgriAI | Streamed responses from `/ai/chat` rendered progressively |
 | Errors | Centralized error handling with toast notifications and error boundaries |
 
-See the [backend repository](https://github.com/OWNER/farmora-backend) for the full API reference.
+See the [backend repository](https://github.com/anas20023/farmora-backend) for the full API reference.
 
 ---
 
@@ -262,7 +262,7 @@ Continuous Integration runs lint, type checks, and tests on every pull request.
 
 1. Import the repository into [Vercel](https://vercel.com/).
 2. Set the environment variables listed above.
-3. Deploy — every push to `main` triggers a production deployment.
+3. Deploy — every push to `master` triggers a production deployment.
 
 ### Docker
 
@@ -290,8 +290,8 @@ CMD ["node", "server.js"]
 ```
 
 ```bash
-docker build -t farmora-frontend .
-docker run -p 3000:3000 --env-file .env.local farmora-frontend
+docker build -t Farmora-Frontend .
+docker run -p 3000:3000 --env-file .env.local Farmora-Frontend
 ```
 
 > Requires `output: "standalone"` in `next.config.ts`.
@@ -302,7 +302,7 @@ docker run -p 3000:3000 --env-file .env.local farmora-frontend
 
 We welcome contributions from the team and community.
 
-1. **Fork** the repo and create your branch from `main`:
+1. **Fork** the repo and create your branch from `master`:
    ```bash
    git checkout -b feat/your-feature-name
    ```
@@ -344,8 +344,8 @@ We welcome contributions from the team and community.
 
 Automatically generated from the GitHub API:
 
-<a href="https://github.com/OWNER/farmora-frontend/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=OWNER/farmora-frontend" alt="Contributors" />
+<a href="https://github.com/anas20023/Farmora_Frontend/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=anas20023/Farmora-Frontend" alt="Contributors" />
 </a>
 
 ![Repobeats](https://repobeats.axiom.co/api/embed/REPLACE_WITH_YOUR_REPOBEATS_ID.svg "Repobeats analytics image")
@@ -377,7 +377,7 @@ Distributed under the **MIT License**. See [`LICENSE`](./LICENSE) for details.
 
 ## 🔗 Related Repositories
 
-- ⚙️ [Farmora Backend](https://github.com/OWNER/farmora-backend)
+- ⚙️ [Farmora Backend](https://github.com/anas20023/farmora-backend)
 
 <div align="center">
 
