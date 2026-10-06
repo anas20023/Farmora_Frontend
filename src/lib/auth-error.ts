@@ -16,5 +16,5 @@ export function getAuthErrorMessage(error: unknown): string {
     return "We couldn’t reach Farmora. Check your connection and try again.";
   }
 
-  return "We couldn’t complete that request. Please try again.";
+  return message || "We couldn’t complete that request. Please try again.";
 }
