@@ -21,6 +21,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { getAuthErrorMessage } from "@/lib/auth-error";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
 
@@ -100,25 +101,32 @@ export default function RegisterPage() {
     }
 
     setIsLoading(true);
-    await authClient.signUp.email({
+    try {
+      await authClient.signUp.email({
       name: name.trim(),
       email: email.trim(),
       wished_role: role.trim(),
       password: password,
       callbackURL: "/login",
     }, {
-      onSuccess: (ctx) => {
-        console.log(ctx)
-        toast.success("Registeration Successful")
+      onSuccess: () => {
+        // Better Auth intentionally returns the same response for an existing
+        // email, so this message avoids leaking whether an account exists.
+        toast.success("Check your inbox for the next step. If you already have an account, please sign in instead.")
         router.push('/login')
       },
       onError: (ctx) => {
-        console.log(ctx)
-        toast.error(ctx.error.message)
+        toast.error(getAuthErrorMessage(ctx.error))
       }
 
-    });
-    setIsLoading(false);
+      });
+    } catch (error) {
+      const message = getAuthErrorMessage(error);
+      setErrorMessage(message);
+      toast.error(message);
+    } finally {
+      setIsLoading(false);
+    }
 
   };
 
@@ -129,16 +137,18 @@ export default function RegisterPage() {
         await authClient.signIn.social({
           provider: "google",
           callbackURL: "/login",
-        }).catch(() => {
-          // Continue gracefully
+        }).catch((err) => {
+          toast.error(err.message || "Someting went wrong")
         });
       }
     } catch {
       // Graceful fallback
+      toast.error("Someting went wrong")
     } finally {
       // Per user requirement: navigate to /login route
       setTimeout(() => {
         router.push("/login");
+        toast.success("Google Authentication Sucessful")
       }, 500);
     }
   };

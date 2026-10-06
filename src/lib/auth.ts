@@ -1,7 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { betterAuth } from 'better-auth';
 import { admin, username } from 'better-auth/plugins';
 import { PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
+import {
+    sendExistingUserEmail,
+    sendPasswordResetEmail,
+    sendVerificationEmail,
+} from '@/lib/email';
 
 export const auth = betterAuth({
     database: {
@@ -19,23 +25,45 @@ export const auth = betterAuth({
                 type: 'string',
                 required: true,
                 defaultValue: 'user',
-                input: false, // Set to true if the field can be passed during sign-up
+                input: true, // Set to true if the field can be passed during sign-up
                 returned: true, // Set to true if it should be returned in API responses
             },
             wished_role: {
                 type: 'string',
                 required: true,
                 input: true, // Set to true if the field can be passed during sign-up
+                defaultValue: 'user',
                 returned: true, // Set to true if it should be returned in API responses
             },
         },
     },
     emailAndPassword: {
         enabled: true,
-        requireEmailVerification: false,
+        requireEmailVerification: true,
+        onExistingUserSignUp: async ({ user }, _request) => {
+            await sendExistingUserEmail({
+                email: user.email,
+                name: user.name,
+            });
+        },
         autoSignIn: false,
-        onExistingUserSignUp: async ({ user }, request) => {
-            // Email send later.
+        sendResetPassword: async ({ user, url }) => {
+            await sendPasswordResetEmail({
+                email: user.email,
+                name: user.name,
+                url,
+            });
+        },
+    },
+    emailVerification: {
+        sendOnSignUp: true,
+        sendOnSignIn: true,
+        sendVerificationEmail: async ({ user, url }) => {
+            await sendVerificationEmail({
+                email: user.email,
+                name: user.name,
+                url,
+            });
         },
     },
     baseURL: process.env.BETTER_AUTH_URL,

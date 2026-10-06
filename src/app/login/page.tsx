@@ -20,6 +20,7 @@ import {
   X,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { getAuthErrorMessage } from "@/lib/auth-error";
 import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
 
@@ -75,18 +76,16 @@ export default function LoginPage() {
         callbackURL: "/",
       }, {
         onError: (ctx) => {
-          console.log(ctx)
-          toast.error(ctx.error.message)
+          toast.error(getAuthErrorMessage(ctx.error))
         },
-        onSuccess: (ctx) => {
-          console.log(ctx.response)
-          toast.success("Login Succesful")
+        onSuccess: () => {
+          toast.success("Login successful")
           router.push('/')
         }
       });
       setIsLoading(false);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Something went wrong")
+      toast.error(getAuthErrorMessage(err))
       setIsLoading(false);
     }
   };
@@ -112,10 +111,18 @@ export default function LoginPage() {
     }
   };
 
-  const handleForgotSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleForgotSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (forgotEmail) {
+    if (!forgotEmail) return;
+    try {
+      const { error } = await authClient.requestPasswordReset({
+        email: forgotEmail.trim(),
+        redirectTo: "/reset-password",
+      });
+      if (error) throw error;
       setForgotSubmitted(true);
+    } catch (error) {
+      toast.error(getAuthErrorMessage(error));
     }
   };
 
