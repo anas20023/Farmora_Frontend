@@ -335,10 +335,10 @@ We welcome contributions from the team and community.
 
 | Name | Role | GitHub |
 |------|------|--------|
-| **Anas Ibn Belal** | Frontend Developer | [@github-username](https://github.com/github-username) |
-| **Anamika Akter Mohona** | Frontend Developer | [@github-username](https://github.com/github-username) |
-| **Fahmida Kaniz** | Frontend Developer | [@github-username](https://github.com/github-username) |
-| **Sadia Rimi** | Frontend Developer | [@github-username](https://github.com/github-username) |
+| **Anas Ibn Belal** | Full Stack Developer | [@anas20023](https://github.com/github-username) |
+| **Anamika Akter Mohona** | Frontend Developer & UI/UX Designer | [@anamika2994](https://github.com/anamika2994) |
+| **Fahmida Kaniz** | Frontend Developer & UI/UX Designer| [@Fahmida20006](https://github.com/Fahmida20006) |
+| **Sadia Rimi** | Frontend Developer & UI/UX Designer| [@rimi20233](https://github.com/rimi20233) |
 
 ### 🌟 Contributors
 
