@@ -21,7 +21,6 @@ import {
   UserPlus,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
-import { getAuthErrorMessage } from "@/lib/auth-error";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
 
@@ -121,8 +120,9 @@ export default function RegisterPage() {
               toast.error(ctx.error instanceof Error ? ctx.error.message : "Something went wrong")
       }
       });
-    } catch (error) {
-      const message = getAuthErrorMessage(error);
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : "Something went wrong";
       setErrorMessage(message);
       toast.error(message);
     } finally {

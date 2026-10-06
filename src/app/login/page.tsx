@@ -20,7 +20,6 @@ import {
   X,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
-import { getAuthErrorMessage } from "@/lib/auth-error";
 import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
 
@@ -76,7 +75,7 @@ export default function LoginPage() {
         callbackURL: "/",
       }, {
         onError: (ctx) => {
-          toast.error(getAuthErrorMessage(ctx.error))
+          toast.error(ctx.error.message || "Something went wrong")
         },
         onSuccess: () => {
           toast.success("Login successful")
@@ -122,7 +121,7 @@ export default function LoginPage() {
       if (error) throw error;
       setForgotSubmitted(true);
     } catch (error) {
-      toast.error(getAuthErrorMessage(error));
+      toast.error(error instanceof Error ? error.message : "Something went wrong")
     }
   };
 
