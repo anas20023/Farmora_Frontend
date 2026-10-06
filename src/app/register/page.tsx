@@ -112,13 +112,14 @@ export default function RegisterPage() {
       onSuccess: () => {
         // Better Auth intentionally returns the same response for an existing
         // email, so this message avoids leaking whether an account exists.
-        toast.success("Check your inbox for the next step. If you already have an account, please sign in instead.")
+        toast.success("Check your inbox for the next step. If you already have an account, please sign in instead.",{
+
+        })
         router.push('/login')
       },
       onError: (ctx) => {
-        toast.error(getAuthErrorMessage(ctx.error))
+              toast.error(ctx.error instanceof Error ? ctx.error.message : "Something went wrong")
       }
-
       });
     } catch (error) {
       const message = getAuthErrorMessage(error);

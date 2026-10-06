@@ -85,7 +85,7 @@ export default function LoginPage() {
       });
       setIsLoading(false);
     } catch (err) {
-      toast.error(getAuthErrorMessage(err))
+      toast.error(err instanceof Error ? err.message : "Something went wrong")
       setIsLoading(false);
     }
   };
@@ -97,14 +97,14 @@ export default function LoginPage() {
         await authClient.signIn.social({
           provider: "google",
           callbackURL: "/",
-        }).catch(() => {
-          // Continue gracefully
+        }).catch((err) => {
+          toast.error(err instanceof Error ? err.message : "Something went wrong")
         });
       }
     } catch {
-      // Graceful fallback
+      toast.error("Something went wrong")
     } finally {
-      // Per user requirement: navigate to / route
+      toast.success("Google Authenticated")
       setTimeout(() => {
         router.push("/");
       }, 350);
