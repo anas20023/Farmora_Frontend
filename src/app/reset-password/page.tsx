@@ -6,7 +6,6 @@ import { Suspense, type FormEvent, useState } from "react";
 import { KeyRound, Sprout } from "lucide-react";
 import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
-import { getAuthErrorMessage } from "@/lib/auth-error";
 
 function ResetPasswordForm() {
   const params = useSearchParams();
@@ -28,7 +27,7 @@ function ResetPasswordForm() {
       toast.success("Your password has been reset. Please sign in.");
       router.push("/login");
     } catch (error) {
-      toast.error(getAuthErrorMessage(error));
+      toast.error(error instanceof Error ? error.message : "Something went wrong");
     } finally {
       setLoading(false);
     }
