@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import FeaturedCropsSection from "@/components/FeaturedCropsSection";
 import CtaSection from "@/components/CtaSection";
 import Footer from "@/components/Footer";
 
@@ -20,6 +21,9 @@ export default function Home() {
             Powered by IoT edge monitoring, satellite soil analytics, and transparent digital contracts across Bangladesh.
           </p>
         </section>
+
+        {/* Featured Crops & Pre-Orders Section */}
+        <FeaturedCropsSection />
 
         {/* Call To Action Section */}
         <CtaSection />
