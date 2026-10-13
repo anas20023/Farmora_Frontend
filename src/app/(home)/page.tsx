@@ -1,5 +1,4 @@
 import Navbar from "@/components/Navbar";
-import FeaturedCropsSection from "@/components/FeaturedCropsSection";
 import CtaSection from "@/components/CtaSection";
 import Footer from "@/components/Footer";
 
@@ -22,9 +21,6 @@ export default function Home() {
           </p>
         </section>
 
-        {/* Featured Crops & Pre-Orders Section */}
-        <FeaturedCropsSection />
-
         {/* Call To Action Section */}
         <CtaSection />
       </main>
@@ -32,3 +28,4 @@ export default function Home() {
     </div>
   );
 }
+
