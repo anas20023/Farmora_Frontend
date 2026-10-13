@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import CtaSection from "@/components/CtaSection";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -19,6 +20,9 @@ export default function Home() {
             Powered by IoT edge monitoring, satellite soil analytics, and transparent digital contracts across Bangladesh.
           </p>
         </section>
+
+        {/* Call To Action Section */}
+        <CtaSection />
       </main>
       <Footer />
     </div>
