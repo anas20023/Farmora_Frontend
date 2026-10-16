@@ -72,14 +72,14 @@ export default function LoginPage() {
         email: email.trim(),
         password: password,
         rememberMe: rememberMe,
-        callbackURL: "/",
+        callbackURL: "/dashboard",
       }, {
         onError: (ctx) => {
           toast.error(ctx.error.message || "Something went wrong")
         },
         onSuccess: () => {
           toast.success("Login successful")
-          router.push('/')
+          router.replace('/dashboard')
         }
       });
       setIsLoading(false);
@@ -95,7 +95,7 @@ export default function LoginPage() {
       if (authClient?.signIn?.social) {
         await authClient.signIn.social({
           provider: "google",
-          callbackURL: "/",
+          callbackURL: "/dashboard",
         }).catch((err) => {
           toast.error(err instanceof Error ? err.message : "Something went wrong")
         });
@@ -105,7 +105,7 @@ export default function LoginPage() {
     } finally {
       toast.success("Google Authenticated")
       setTimeout(() => {
-        router.push("/");
+        router.replace("/dashboard");
       }, 350);
     }
   };

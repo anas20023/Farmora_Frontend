@@ -19,6 +19,10 @@ const authErrors: Record<string, AuthErrorDetails> = {
     title: "We couldn’t complete sign-in",
     message: "The sign-in link is invalid or has expired. Please start again from the login page.",
   },
+  unauthorized: {
+    title: "You don't have access to that page",
+    message: "Your account does not have permission to view this area.",
+  },
 };
 
 export default async function AuthErrorPage({
