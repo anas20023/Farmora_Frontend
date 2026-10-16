@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import FeaturedCropsSection from "@/components/FeaturedCropsSection";
+import FeaturedFarmsSection from "@/components/FeaturedFarmsSection";
 import CtaSection from "@/components/CtaSection";
 import Footer from "@/components/Footer";
 
@@ -13,6 +14,7 @@ export default function Home() {
         <HeroSection />
         <HowItWorksSection />
         <FeaturedCropsSection />
+        <FeaturedFarmsSection />
         <CtaSection />
       </main>
       <Footer />
