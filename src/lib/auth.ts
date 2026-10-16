@@ -32,7 +32,6 @@ export const auth = betterAuth({
                 type: 'string',
                 required: true,
                 input: true, // Set to true if the field can be passed during sign-up
-                defaultValue: 'user',
                 returned: true, // Set to true if it should be returned in API responses
             },
         },
