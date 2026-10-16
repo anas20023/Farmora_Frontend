@@ -1,5 +1,5 @@
 import { getCtaData } from "@/lib/cta-data";
-import CtaClient from "@/components/cta/CtaClient";
+import CtaClient from "@/components/home/cta/CtaClient";
 
 /**
  * Server Component representing the Farmora Call To Action (CTA) section.

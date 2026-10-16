@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/common/Navbar";
 import ProfileClient from "./ProfileClient";
 import type { SerializableUserProfile } from "@/types/profile";
 import { Sprout } from "lucide-react";

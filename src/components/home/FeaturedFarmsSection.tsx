@@ -1,5 +1,5 @@
 import { getVerifiedFarmsData } from "@/lib/verified-farms-data";
-import FeaturedFarmsClient from "@/components/farms/FeaturedFarmsClient";
+import FeaturedFarmsClient from "@/components/home/farms/FeaturedFarmsClient";
 
 /**
  * Server Component representing the Farmora Featured Verified Farms section.

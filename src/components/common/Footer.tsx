@@ -1,5 +1,5 @@
 import { getFooterData } from "@/lib/footer-data";
-import FooterClient from "@/components/footer/FooterClient";
+import FooterClient from "@/components/common/footer/FooterClient";
 
 /**
  * Server Component representing the Farmora global Footer.

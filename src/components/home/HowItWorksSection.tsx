@@ -1,5 +1,5 @@
 import { getHowItWorksData } from "@/lib/how-it-works-data";
-import HowItWorksClient from "@/components/how-it-works/HowItWorksClient";
+import HowItWorksClient from "@/components/home/how-it-works/HowItWorksClient";
 
 /**
  * Server Component representing the "How Farmora Works" section.

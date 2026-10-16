@@ -1,5 +1,5 @@
 import { getHeroData } from "@/lib/hero-data";
-import HeroClient from "@/components/hero/HeroClient";
+import HeroClient from "@/components/home/hero/HeroClient";
 
 /**
  * Server Component representing the Farmora Hero Section.

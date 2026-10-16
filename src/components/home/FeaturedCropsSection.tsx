@@ -1,5 +1,5 @@
 import { getFeaturedCropsData } from "@/lib/featured-crops-data";
-import FeaturedCropsClient from "@/components/crops/FeaturedCropsClient";
+import FeaturedCropsClient from "@/components/home/crops/FeaturedCropsClient";
 
 /**
  * Server Component representing the Farmora Featured Crops & Pre-Orders section.

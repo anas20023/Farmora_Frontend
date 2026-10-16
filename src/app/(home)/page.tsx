@@ -1,10 +1,10 @@
-import Navbar from "@/components/Navbar";
-import HeroSection from "@/components/HeroSection";
-import HowItWorksSection from "@/components/HowItWorksSection";
-import FeaturedCropsSection from "@/components/FeaturedCropsSection";
-import FeaturedFarmsSection from "@/components/FeaturedFarmsSection";
-import CtaSection from "@/components/CtaSection";
-import Footer from "@/components/Footer";
+import Navbar from "@/components/common/Navbar";
+import HeroSection from "@/components/home/HeroSection";
+import HowItWorksSection from "@/components/home/HowItWorksSection";
+import FeaturedCropsSection from "@/components/home/FeaturedCropsSection";
+import FeaturedFarmsSection from "@/components/home/FeaturedFarmsSection";
+import CtaSection from "@/components/home/CtaSection";
+import Footer from "@/components/common/Footer";
 
 export default function Home() {
   return (
