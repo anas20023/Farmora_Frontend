@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Avatar, Button, Menu, Popover } from "@heroui/react";
-import { ChevronDown, LogIn, LogOut, Menu as MenuIcon, Moon, Sprout, Sun, UserRound, X } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogIn, LogOut, Menu as MenuIcon, Moon, Sprout, Sun, UserRound, X } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 
 const navigation = [
@@ -84,6 +84,10 @@ export default function Navbar() {
                   </div>
                   <Menu aria-label="Account options" className="p-1">
                     <Menu.Item id="profile" href="/profile" textValue="Profile"><UserRound className="size-4" />Profile</Menu.Item>
+                    {
+                      session.user.role !== 'user' &&
+                      <Menu.Item id="dashboard" href={`/dashboard/${session.user.role}`} textValue="Dashboard"><LayoutDashboard className="size-4" />Dashboard</Menu.Item>
+                    }
                     <Menu.Item id="logout" textValue="Log out" onAction={() => authClient.signOut()}><LogOut className="size-4" />Log out</Menu.Item>
                   </Menu>
                 </Popover.Dialog>
