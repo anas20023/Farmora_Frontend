@@ -36,7 +36,7 @@ type RecipientWithUrlOptions = RecipientOptions & {
 /** Sends a server-only, Farmora-branded email through Gmail SMTP. */
 async function sendEmail({ to, subject, text, contents }: SendEmailOptions) {
     await getMailer().sendMail({
-        from: `"Farmora" <${process.env.SMTP_USER}>`,
+        from: process.env.SMTP_FROM ?? `"Farmora" <${process.env.SMTP_USER}>`,
         to,
         subject,
         text,

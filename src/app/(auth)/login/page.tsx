@@ -35,6 +35,7 @@ export default function LoginPage() {
   const [forgotModalOpen, setForgotModalOpen] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotSubmitted, setForgotSubmitted] = useState(false);
+  const [isForgotLoading, setIsForgotLoading] = useState(false);
 
   // Initialize and synchronize dark/light theme matching Navbar
   useEffect(() => {
@@ -113,6 +114,7 @@ export default function LoginPage() {
   const handleForgotSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!forgotEmail) return;
+    setIsForgotLoading(true);
     try {
       const { error } = await authClient.requestPasswordReset({
         email: forgotEmail.trim(),
@@ -122,6 +124,8 @@ export default function LoginPage() {
       setForgotSubmitted(true);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Something went wrong")
+    } finally {
+      setIsForgotLoading(false);
     }
   };
 
@@ -474,10 +478,11 @@ export default function LoginPage() {
                     type="submit"
                     variant="primary"
                     size="md"
+                    isDisabled={isForgotLoading}
                     className="flex-1"
                   >
                     <span className="flex items-center justify-center gap-1.5">
-                      <span>Send Link</span>
+                      <span>{isForgotLoading ? "Sending..." : "Send Link"}</span>
                       <ArrowRight aria-hidden="true" className="size-4" />
                     </span>
                   </Button>

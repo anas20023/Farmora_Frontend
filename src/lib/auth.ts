@@ -46,11 +46,20 @@ export const auth = betterAuth({
             });
         },
         autoSignIn: false,
-        sendResetPassword: async ({ user, url }) => {
+        revokeSessionsOnPasswordReset: true,
+        sendResetPassword: async ({ user, token }) => {
+            // Better Auth's generated `url` points at its callback endpoint.
+            // The app owns the reset form, so send the token directly to that UI.
+            const resetUrl = new URL(
+                '/reset-password',
+                process.env.BETTER_AUTH_URL ?? 'http://localhost:3000',
+            );
+            resetUrl.searchParams.set('token', token);
+
             await sendPasswordResetEmail({
                 email: user.email,
                 name: user.name,
-                url,
+                url: resetUrl.toString(),
             });
         },
     },
