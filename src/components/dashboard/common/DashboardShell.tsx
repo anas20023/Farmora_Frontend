@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import DashboardSidebar from "@/components/dashboard/common/DashboardSidebar";
+import DashboardThemeToggle from "@/components/dashboard/common/DashboardThemeToggle";
 import { dashboardConfigs, type DashboardRole } from "@/config/dashboard";
 import { Avatar, Button } from "@heroui/react";
 import { auth } from "@/lib/auth";
@@ -8,15 +9,17 @@ import { LogOut } from "lucide-react";
 import { logoutAction } from "@/actions/auth";
 
 type DashboardShellProps = {
-  role: DashboardRole;
   children: ReactNode;
 };
 
-export default async function DashboardShell({ role, children }: DashboardShellProps) {
-  const config = dashboardConfigs[role];
+export default async function DashboardShell({ children }: DashboardShellProps) {
   const session = await auth.api.getSession({
-    headers: await headers()
-  })
+    headers: await headers(),
+  });
+  const role = session?.user.role?.toLowerCase() as DashboardRole | undefined;
+  const config = role ? dashboardConfigs[role] : undefined;
+
+  if (!config) return null;
   return (
     <div className="flex min-h-screen bg-background text-foreground">
       <DashboardSidebar config={config} />
@@ -26,9 +29,10 @@ export default async function DashboardShell({ role, children }: DashboardShellP
             <p className="text-sm font-semibold">{config.label} Dashboard</p>
           </div>
           <div className="flex flex-row justify-between items-center gap-4">
+            <DashboardThemeToggle />
             <Avatar className="rounded-full">
               <Avatar.Image alt={session?.user.name || "John Doe"} src={session?.user.image || ""} />
-              <Avatar.Fallback>{session?.user.name.toUpperCase().slice(0, 2) || "U"}</Avatar.Fallback>
+              <Avatar.Fallback>{session?.user.name?.toUpperCase().slice(0, 2) || "U"}</Avatar.Fallback>
             </Avatar>
             <form action={logoutAction}>
               <Button

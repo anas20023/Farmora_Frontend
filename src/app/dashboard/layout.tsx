@@ -1,3 +1,5 @@
+import DashboardShell from "@/components/dashboard/common/DashboardShell";
+
 export default function DashboardLayout(props: LayoutProps<"/dashboard">) {
-  return <main>{props.children}</main>;
+  return <DashboardShell>{props.children}</DashboardShell>;
 }
