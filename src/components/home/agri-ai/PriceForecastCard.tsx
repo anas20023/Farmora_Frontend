@@ -16,7 +16,7 @@ export default function PriceForecastCard({ priceForecast }: PriceForecastCardPr
       {/* Left Column: ML Forecast Info */}
       <div className="flex items-center gap-3.5">
         <div className="grid size-10 shrink-0 place-items-center rounded-xl border border-[#cde4d6] bg-white text-[#134e3a] shadow-2xs dark:border-emerald-800/60 dark:bg-[#1b3a2c] dark:text-emerald-300">
-          <TrendingUp aria-hidden="true" className="size-5 stroke-[2]" />
+          <TrendingUp aria-hidden="true" className="size-5 stroke-2" />
         </div>
         <div className="min-w-0">
           <h4 className="text-xs font-bold text-[#0a3826] sm:text-sm dark:text-white">

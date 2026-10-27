@@ -15,13 +15,13 @@ export default function FeatureCard({ feature }: FeatureCardProps) {
       case "droplet":
         return (
           <div className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#e6f5ec] text-[#134e3a] dark:bg-emerald-950/60 dark:text-emerald-300">
-            <Droplets aria-hidden="true" className="size-5 stroke-[2]" />
+            <Droplets aria-hidden="true" className="size-5 stroke-2" />
           </div>
         );
       case "trending-up":
         return (
           <div className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#e6f5ec] text-[#134e3a] dark:bg-emerald-950/60 dark:text-emerald-300">
-            <TrendingUp aria-hidden="true" className="size-5 stroke-[2]" />
+            <TrendingUp aria-hidden="true" className="size-5 stroke-2" />
           </div>
         );
       default:
