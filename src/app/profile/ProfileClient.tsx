@@ -120,7 +120,7 @@ export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
   ];
 
   return (
-    <div className="w-full space-y-6">
+    <div data-ui="true" className="w-full space-y-6">
       {/* Dev / Preview Mode Banner */}
       {isPreview && (
         <aside
@@ -147,14 +147,14 @@ export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
       )}
 
       {/* Main Profile Header Card */}
-      <Card variant="default" className="relative overflow-hidden border border-border bg-surface shadow-sm">
+      <Card variant="default" className="relative overflow-hidden border border-border bg-surface">
         {/* Decorative Top Accent Banner */}
         <div
           aria-hidden="true"
-          className="h-32 sm:h-40 w-full bg-gradient-to-r from-accent/90 via-accent/70 to-surface-secondary relative"
+          className="h-28 sm:h-32 w-full bg-surface-secondary relative"
         >
-          <div className="absolute inset-0 bg-[radial-gradient(#ffffff20_1px,transparent_1px)] [background-size:16px_16px] opacity-40" />
-          <div className="absolute right-4 bottom-4 hidden sm:flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 text-xs font-medium text-foreground backdrop-blur border border-border">
+
+          <div className="absolute right-4 bottom-4 hidden sm:flex items-center gap-2 rounded bg-surface px-3 py-1 text-xs font-medium text-foreground border border-border">
             <Sprout className="size-3.5 text-accent" />
             <span>Farmora Verified Member</span>
           </div>
@@ -165,7 +165,7 @@ export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
             {/* User Avatar + Presence */}
             <div className="flex items-end gap-4">
               <div className="relative">
-                <Avatar size="lg" className="size-24 sm:size-28 ring-4 ring-background border border-border shadow-md">
+                <Avatar size="lg" className="size-24 sm:size-28 ring-4 ring-background border border-border">
                   {user.image ? (
                     <Avatar.Image src={user.image} alt={user.name} />
                   ) : null}
@@ -295,7 +295,7 @@ export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
       </Card>
 
       {/* Tabs Navigation */}
-      <div className="border-b border-border">
+      <div data-ui="true" className="border-b border-border">
         <nav
           aria-label="Profile Sections"
           className="flex space-x-2 overflow-x-auto pb-px scrollbar-none"
@@ -637,14 +637,14 @@ export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-muted">Session Status</span>
                     <span className="font-semibold text-emerald-500 flex items-center gap-1">
-                      <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="size-1.5 rounded-full bg-emerald-500" />
                       Active
                     </span>
                   </div>
                   {user.sessionInfo?.id && (
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-muted">Session Reference</span>
-                      <span className="font-mono text-foreground">
+                      <span className="text-foreground">
                         {user.sessionInfo.id.slice(0, 12)}...
                       </span>
                     </div>

@@ -15,7 +15,7 @@ export default function AdvisoryBanner({ advisory }: AdvisoryBannerProps) {
   const { badge, confidence, message } = advisory;
 
   return (
-    <div className="mt-4 flex items-start gap-3.5 rounded-2xl border border-[#16553d] bg-[#0c3928] p-4 text-white shadow-sm transition-all duration-200 hover:border-emerald-500/40 sm:p-5 dark:border-emerald-900/60 dark:bg-[#072419]">
+    <div className="mt-4 flex items-start gap-3.5 rounded-2xl border border-[#16553d] bg-[#0c3928] p-4 text-white hover:border-emerald-500/40 sm:p-5 dark:border-emerald-900/60 dark:bg-[#072419]">
       {/* AI Sparkle Node Icon */}
       <div className="grid size-9 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/10 text-emerald-300 sm:size-10">
         <Sparkles aria-hidden="true" className="size-4.5 sm:size-5" />

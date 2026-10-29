@@ -3,22 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
-import { Button, Separator } from "@heroui/react";
-import {
-  ArrowLeft,
-  ArrowRight,
-  CheckCircle2,
-  Eye,
-  EyeOff,
-  KeyRound,
-  Lock,
-  LogIn,
-  Mail,
-  Moon,
-  Sprout,
-  Sun,
-  X,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Eye, EyeOff, Lock, Mail, Moon, Sprout, Sun, X } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
@@ -37,7 +22,6 @@ export default function LoginPage() {
   const [forgotSubmitted, setForgotSubmitted] = useState(false);
   const [isForgotLoading, setIsForgotLoading] = useState(false);
 
-  // Initialize and synchronize dark/light theme matching Navbar
   useEffect(() => {
     const storedTheme = window.localStorage.getItem("farmora-theme");
     const shouldUseDark = storedTheme
@@ -68,7 +52,6 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // Attempt login via better-auth client if available
       await authClient.signIn.email({
         email: email.trim(),
         password: password,
@@ -76,16 +59,16 @@ export default function LoginPage() {
         callbackURL: "/dashboard",
       }, {
         onError: (ctx) => {
-          toast.error(ctx.error.message || "Something went wrong")
+          toast.error(ctx.error.message || "Invalid credentials");
         },
         onSuccess: () => {
-          toast.success("Login successful")
-          router.replace('/dashboard')
+          toast.success("Signed in successfully");
+          router.replace("/dashboard");
         }
       });
       setIsLoading(false);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Something went wrong")
+      toast.error(err instanceof Error ? err.message : "Something went wrong");
       setIsLoading(false);
     }
   };
@@ -98,22 +81,18 @@ export default function LoginPage() {
           provider: "google",
           callbackURL: "/dashboard",
         }).catch((err) => {
-          toast.error(err instanceof Error ? err.message : "Something went wrong")
+          toast.error(err instanceof Error ? err.message : "Google sign in failed");
         });
       }
-    } catch {
-      toast.error("Something went wrong")
     } finally {
-      toast.success("Google Authenticated")
-      setTimeout(() => {
-        router.replace("/dashboard");
-      }, 350);
+      setIsGoogleLoading(false);
     }
   };
 
-  const handleForgotSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleForgotPassword = async (e: FormEvent) => {
     e.preventDefault();
     if (!forgotEmail) return;
+
     setIsForgotLoading(true);
     try {
       const { error } = await authClient.requestPasswordReset({
@@ -123,118 +102,85 @@ export default function LoginPage() {
       if (error) throw error;
       setForgotSubmitted(true);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Something went wrong")
+      toast.error(error instanceof Error ? error.message : "Something went wrong");
     } finally {
       setIsForgotLoading(false);
     }
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col justify-between bg-background text-foreground transition-colors duration-200">
-      {/* Background ambient decorative glows */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 overflow-hidden"
-      >
-        <div className="absolute -top-36 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-accent/15 blur-3xl" />
-        <div className="absolute -bottom-36 right-10 h-80 w-80 rounded-full bg-accent/10 blur-3xl" />
-      </div>
-
-      {/* Top Header / Bar */}
-      <header className="relative z-10 flex w-full items-center justify-between px-4 py-4 sm:px-8">
+    <div className="flex min-h-[100svh] flex-col justify-between bg-background text-foreground">
+      {/* Top Bar */}
+      <header className="flex w-full items-center justify-between px-6 py-4">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:bg-surface-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted transition-colors hover:text-foreground"
         >
-          <ArrowLeft aria-hidden="true" className="size-4" />
+          <ArrowLeft className="size-4" />
           <span>Back to Home</span>
         </Link>
 
-        <div className="flex items-center gap-2">
-          <Button
-            aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
-            isIconOnly
-            size="sm"
-            variant="ghost"
-            onPress={toggleTheme}
-            className="rounded-lg border border-border text-foreground hover:bg-surface-secondary"
-          >
-            {isDark ? (
-              <Sun aria-hidden="true" className="size-4" />
-            ) : (
-              <Moon aria-hidden="true" className="size-4" />
-            )}
-          </Button>
-        </div>
+        <button
+          type="button"
+          aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
+          onClick={toggleTheme}
+          className="flex size-9 items-center justify-center rounded border border-border bg-surface text-muted hover:text-foreground"
+        >
+          {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+        </button>
       </header>
 
-      {/* Center Main Section */}
-      <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
+      {/* Main Container */}
+      <main className="flex flex-1 flex-col items-center justify-center px-4 py-8 sm:px-6">
         <div className="w-full max-w-md">
-          {/* Center: Logo and “Farmora” and sub titles */}
+          {/* Logo & Headline */}
           <div className="flex flex-col items-center text-center">
-            <Link
-              href="/"
-              className="group mb-3 inline-flex flex-col items-center transition-transform hover:scale-105 focus-visible:outline-none"
-            >
-              <span className="grid size-12 place-items-center rounded-2xl bg-accent text-accent-foreground shadow-lg shadow-accent/25 ring-2 ring-accent/20">
-                <Sprout aria-hidden="true" className="size-7" />
-              </span>
-            </Link>
+            <span className="grid size-11 place-items-center rounded bg-accent text-accent-foreground mb-3">
+              <Sprout className="size-6" />
+            </span>
 
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Farmora
+            <h1 className="font-display text-3xl font-bold tracking-tight text-foreground">
+              Sign In to Farmora
             </h1>
 
-            <p className="mt-1 text-sm font-medium text-foreground/90 sm:text-base">
-              Smart Agriculture Marketplace
+            <p className="mt-1 text-sm text-muted">
+              Smart agricultural marketplace and telemetry console
             </p>
           </div>
 
-          {/* Center: Login Form Card */}
-          <div className="mt-6 rounded-2xl border border-border bg-surface p-6 shadow-xl shadow-black/5 backdrop-blur-sm sm:p-8 dark:shadow-black/25">
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">
-                Welcome back
-              </h2>
-              <p className="text-xs text-muted sm:text-sm">
-                Enter your credentials to access your Farmora account
-              </p>
-            </div>
-
-            <form onSubmit={handleLogin} className="space-y-4" noValidate={false}>
-              {/* Email Field */}
-              <div className="space-y-1.5">
+          {/* Form Card */}
+          <div data-ui="true" className="mt-8 rounded bg-surface p-6 sm:p-8 text-foreground border border-border">
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
                 <label
                   htmlFor="email"
-                  className="block text-xs font-medium text-foreground sm:text-sm"
+                  className="block text-xs font-semibold text-muted mb-1.5"
                 >
                   Email Address
                 </label>
                 <div className="relative flex items-center">
                   <span className="pointer-events-none absolute left-3 text-muted">
-                    <Mail aria-hidden="true" className="size-4" />
+                    <Mail className="size-4" />
                   </span>
                   <input
                     id="email"
                     name="email"
                     type="email"
+                    autoComplete="email"
                     required
-                    autoComplete="username"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="farmer@farmora.com"
-                    className="h-10 w-full rounded-lg border border-border bg-field-background pl-9 pr-3 text-sm text-field-foreground placeholder:text-field-placeholder transition-colors focus:border-focus focus:outline-none focus:ring-1 focus:ring-focus"
+                    className="w-full rounded border border-border bg-background py-2.5 pl-10 pr-3 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
                   />
                 </div>
               </div>
 
-              {/* Password Field */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
                   <label
-                    htmlFor="current-password"
-                    className="block text-xs font-medium text-foreground sm:text-sm"
+                    htmlFor="password"
+                    className="block text-xs font-semibold text-muted"
                   >
                     Password
                   </label>
@@ -245,253 +191,158 @@ export default function LoginPage() {
                       setForgotSubmitted(false);
                       setForgotModalOpen(true);
                     }}
-                    className="text-xs font-medium text-accent hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus"
+                    className="text-xs font-medium text-accent hover:underline"
                   >
                     Forgot password?
                   </button>
                 </div>
+
                 <div className="relative flex items-center">
                   <span className="pointer-events-none absolute left-3 text-muted">
-                    <Lock aria-hidden="true" className="size-4" />
+                    <Lock className="size-4" />
                   </span>
                   <input
-                    id="current-password"
+                    id="password"
                     name="password"
                     type={showPassword ? "text" : "password"}
-                    required
                     autoComplete="current-password"
+                    required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
-                    className="h-10 w-full rounded-lg border border-border bg-field-background pl-9 pr-10 text-sm text-field-foreground placeholder:text-field-placeholder transition-colors focus:border-focus focus:outline-none focus:ring-1 focus:ring-focus"
+                    placeholder="••••••••"
+                    className="w-full rounded border border-border bg-background py-2.5 pl-10 pr-10 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
                   />
                   <button
                     type="button"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2.5 rounded p-1 text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus"
+                    className="absolute right-3 text-muted hover:text-foreground"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
-                    {showPassword ? (
-                      <EyeOff aria-hidden="true" className="size-4" />
-                    ) : (
-                      <Eye aria-hidden="true" className="size-4" />
-                    )}
+                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                   </button>
                 </div>
               </div>
 
-              {/* Remember Me */}
-              <div className="flex items-center justify-between pt-1">
-                <label className="flex cursor-pointer items-center gap-2 select-none">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="size-4 rounded border-border accent-accent focus:ring-focus"
-                  />
-                  <span className="text-xs text-muted sm:text-sm">
-                    Remember this device
-                  </span>
+              <div className="flex items-center">
+                <input
+                  id="remember"
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="size-4 rounded border-border accent-accent"
+                />
+                <label htmlFor="remember" className="ml-2 text-xs text-muted">
+                  Keep me signed in on this device
                 </label>
               </div>
 
-              {/* Login Button (HeroUI v3) */}
-              <div className="pt-2">
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="md"
-                  fullWidth
-                  isDisabled={isLoading}
-                  className="h-11 font-medium shadow-md shadow-accent/20 transition-all hover:opacity-95"
-                >
-                  {isLoading ? (
-                    <span className="flex items-center gap-2">
-                      <Sprout aria-hidden="true" className="size-4 animate-spin" />
-                      <span>Signing in...</span>
-                    </span>
-                  ) : (
-                    <span className="flex items-center justify-center gap-2">
-                      <LogIn aria-hidden="true" className="size-4" />
-                      <span>Join / Login</span>
-                    </span>
-                  )}
-                </Button>
-              </div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full rounded bg-accent py-2.5 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+              >
+                {isLoading ? "Signing in..." : "Sign In to Console"}
+              </button>
             </form>
 
-            {/* Separator / Divider */}
-            <div className="relative my-6 flex items-center justify-center">
-              <Separator className="w-full bg-border" />
-              <span className="absolute bg-surface px-3 text-xs uppercase tracking-wider text-muted">
+            <div className="my-6 text-center">
+              <span className="text-xs text-muted">
                 or continue with
               </span>
             </div>
 
-            {/* Continue with Google Button from HeroUI v3 */}
-            <Button
+            <button
               type="button"
-              variant="outline"
-              size="md"
-              fullWidth
-              isDisabled={isGoogleLoading}
-              onPress={handleGoogleLogin}
-              className="h-11 border-border bg-surface font-medium text-foreground transition-colors hover:bg-surface-secondary"
+              onClick={handleGoogleLogin}
+              disabled={isGoogleLoading}
+              className="flex w-full items-center justify-center gap-2 rounded border border-border bg-surface py-2.5 text-sm font-medium text-foreground hover:bg-surface-secondary"
             >
-              {isGoogleLoading ? (
-                <span className="flex items-center gap-2">
-                  <Sprout aria-hidden="true" className="size-4 animate-spin" />
-                  <span>Connecting to Google...</span>
-                </span>
-              ) : (
-                <span className="flex items-center justify-center gap-2.5">
-                  <FcGoogle aria-hidden="true" className="size-4 text-accent" />
-                  <span>Continue with Google</span>
-                </span>
-              )}
-            </Button>
-
-            {/* Card Footer notes */}
-            <div className="mt-6 flex flex-col items-center gap-2 text-center text-xs text-muted">
-              <p>
-                Don&apos;t have an account?{" "}
-                <Link
-                  href="/register"
-                  className="font-medium text-accent hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus"
-                >
-                  Join Farmora today
-                </Link>
-              </p>
-            </div>
+              <FcGoogle className="size-4" />
+              <span>Google Single Sign-On</span>
+            </button>
           </div>
+
+          <p className="mt-6 text-center text-xs text-muted">
+            Do not have an account?{" "}
+            <Link href="/register" className="font-semibold text-accent hover:underline">
+              Register as Farmer or Buyer
+            </Link>
+          </p>
         </div>
       </main>
 
-      {/* Bottom Footer */}
-      <footer className="relative z-10 py-4 text-center text-xs text-muted">
-        <p>&copy; {new Date().getFullYear()} Farmora Inc. All rights reserved.</p>
+      <footer className="py-4 text-center text-xs text-muted">
+        Farmora Technologies · Regulated Escrow & Telemetry Platform
       </footer>
 
-      {/* Forgot Password Modal Dialog */}
-      {forgotModalOpen ? (
+      {/* Forgot Password Modal */}
+      {forgotModalOpen && (
         <div
           role="dialog"
           aria-modal="true"
-          aria-labelledby="forgot-password-title"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
         >
-          <div className="relative w-full max-w-md rounded-2xl border border-border bg-surface p-6 shadow-2xl">
+          <div className="relative w-full max-w-sm rounded bg-surface p-6 text-foreground border border-border">
             <button
               type="button"
-              aria-label="Close dialog"
-              onClick={() => {
-                setForgotModalOpen(false);
-                setForgotSubmitted(false);
-              }}
-              className="absolute right-4 top-4 rounded-lg p-1.5 text-muted hover:bg-surface-secondary hover:text-foreground"
+              onClick={() => setForgotModalOpen(false)}
+              className="absolute top-4 right-4 rounded p-1 text-muted hover:text-foreground"
             >
-              <X aria-hidden="true" className="size-4" />
+              <X className="size-5" />
             </button>
 
-            <div className="flex items-center gap-3">
-              <span className="grid size-10 place-items-center rounded-xl bg-accent/15 text-accent">
-                <KeyRound aria-hidden="true" className="size-5" />
-              </span>
-              <div>
-                <h3
-                  id="forgot-password-title"
-                  className="text-base font-semibold text-foreground"
-                >
-                  Reset your password
-                </h3>
-                <p className="text-xs text-muted">
-                  We will send a password reset link to your email
-                </p>
-              </div>
-            </div>
+            <h3 className="font-display text-xl font-bold">Reset Password</h3>
 
             {forgotSubmitted ? (
-              <div className="mt-5 space-y-4">
-                <div className="flex items-start gap-3 rounded-lg border border-border bg-surface-secondary p-3.5 text-xs text-foreground sm:text-sm">
-                  <CheckCircle2
-                    aria-hidden="true"
-                    className="size-5 shrink-0 text-accent"
-                  />
-                  <div>
-                    <p className="font-medium text-foreground">
-                      Reset instructions sent
-                    </p>
-                    <p className="mt-0.5 text-muted">
-                      If an account exists for <span className="font-semibold text-foreground">{forgotEmail}</span>, you will receive a secure password recovery link.
-                    </p>
-                  </div>
-                </div>
-                <Button
+              <div className="mt-4 text-xs text-muted space-y-4">
+                <p>
+                  If an account exists for <strong className="text-foreground">{forgotEmail}</strong>, password reset instructions have been sent.
+                </p>
+                <button
                   type="button"
-                  variant="primary"
-                  fullWidth
-                  size="md"
-                  onPress={() => {
-                    setForgotModalOpen(false);
-                    setForgotSubmitted(false);
-                  }}
+                  onClick={() => setForgotModalOpen(false)}
+                  className="w-full rounded bg-accent py-2 text-xs font-semibold text-accent-foreground hover:opacity-90"
                 >
-                  Back to Sign In
-                </Button>
+                  Done
+                </button>
               </div>
             ) : (
-              <form onSubmit={handleForgotSubmit} className="mt-5 space-y-4">
-                <div className="space-y-1.5">
-                  <label
-                    htmlFor="reset-email"
-                    className="block text-xs font-medium text-foreground"
-                  >
-                    Account Email
+              <form onSubmit={handleForgotPassword} className="mt-4 space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-muted mb-1">
+                    Your Registered Email
                   </label>
-                  <div className="relative flex items-center">
-                    <span className="pointer-events-none absolute left-3 text-muted">
-                      <Mail aria-hidden="true" className="size-4" />
-                    </span>
-                    <input
-                      id="reset-email"
-                      type="email"
-                      required
-                      value={forgotEmail}
-                      onChange={(e) => setForgotEmail(e.target.value)}
-                      placeholder="farmer@farmora.com"
-                      className="h-10 w-full rounded-lg border border-border bg-field-background pl-9 pr-3 text-sm text-field-foreground placeholder:text-field-placeholder focus:border-focus focus:outline-none focus:ring-1 focus:ring-focus"
-                    />
-                  </div>
+                  <input
+                    type="email"
+                    required
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    placeholder="farmer@farmora.com"
+                    className="w-full rounded border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-accent"
+                  />
                 </div>
 
-                <div className="flex gap-2 pt-2">
-                  <Button
+                <div className="flex justify-end gap-2">
+                  <button
                     type="button"
-                    variant="ghost"
-                    size="md"
-                    onPress={() => setForgotModalOpen(false)}
-                    className="flex-1 border border-border"
+                    onClick={() => setForgotModalOpen(false)}
+                    className="rounded px-3 py-1.5 text-xs text-muted hover:text-foreground"
                   >
                     Cancel
-                  </Button>
-                  <Button
+                  </button>
+                  <button
                     type="submit"
-                    variant="primary"
-                    size="md"
-                    isDisabled={isForgotLoading}
-                    className="flex-1"
+                    disabled={isForgotLoading}
+                    className="rounded bg-accent px-4 py-1.5 text-xs font-semibold text-accent-foreground hover:opacity-90 disabled:opacity-50"
                   >
-                    <span className="flex items-center justify-center gap-1.5">
-                      <span>{isForgotLoading ? "Sending..." : "Send Link"}</span>
-                      <ArrowRight aria-hidden="true" className="size-4" />
-                    </span>
-                  </Button>
+                    {isForgotLoading ? "Sending..." : "Send Reset Link"}
+                  </button>
                 </div>
               </form>
             )}
           </div>
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

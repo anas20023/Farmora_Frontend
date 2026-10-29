@@ -2,29 +2,29 @@ import type { HowItWorksData } from "@/types/how-it-works";
 
 /**
  * Server-side data provider for the "How Farmora Works" section.
- * Supplies verbatim operational pipeline descriptions, step indicators,
+ * Supplies operational pipeline descriptions, stage indicators,
  * telemetry cadence guarantees, and verified trade highlights.
  */
 export async function getHowItWorksData(): Promise<HowItWorksData> {
   return {
     header: {
-      eyebrow: "END-TO-END OPERATIONAL PIPELINE",
+      eyebrow: "OPERATIONAL STAGES",
       title: {
-        line1: "How Farmora transforms",
-        line2: "agriculture",
+        line1: "From Living Soil",
+        line2: "to Verified Gate",
       },
       description:
-        "Bridging rural growers with commercial food networks using continuous IoT telemetry, verifiable crop lifecycle stages, and cold-chain routing.",
-      activeCycle: "Active Cycle: Winter Harvest 2025",
+        "Bridging rural growers with commercial food buyers through continuous IoT telemetry, verifiable crop lifecycle stages, and cold-chain routing.",
+      activeCycle: "Active Cycle: Winter Harvest",
     },
     steps: [
       {
-        id: "step-1",
-        stepNumber: "01",
+        id: "stage-sown",
+        stepNumber: "Sown",
         icon: "sensor",
-        title: "Smart Monitoring & AI Growth",
+        title: "Soil Monitoring & Seeding",
         description:
-          "Farmers track soil moisture, micro-climate weather, and AI yield forecasts via solar-powered field sensor arrays installed directly on cultivation beds.",
+          "Probes record volumetric moisture, electrical conductivity, and temperature directly from plot soil beds every 15 minutes.",
         footerLeft: {
           icon: "clock",
           text: "15-min sensor ping",
@@ -34,27 +34,27 @@ export async function getHowItWorksData(): Promise<HowItWorksData> {
           "Solar sensor nodes monitor volumetric water content (VWC), electrical conductivity, and leaf canopy thermal index.",
       },
       {
-        id: "step-2",
-        stepNumber: "02",
+        id: "stage-inspected",
+        stepNumber: "Inspected",
         icon: "store",
-        title: "Direct Farm-to-Table Marketplace",
+        title: "AgriAI Yield & Health Analysis",
         description:
-          "Consumers and enterprise buyers discover verified farms, inspect real-time growth curves, and pre-order batches at guaranteed transparent pricing.",
+          "Machine learning models evaluate canopy growth, predict harvest dates with 94%+ confidence, and open direct batch reservations.",
         footerLeft: {
           icon: "shield",
-          text: "Verified Origin Escrow",
+          text: "Verified Escrow",
         },
-        footerRight: "0% Brokerage",
+        footerRight: "Zero Brokerage",
         tooltipDetail:
-          "Payments locked securely in Bangladesh Bank-compliant escrow until buyer receives and inspects batch telemetry receipts.",
+          "Payments locked securely in regulated escrow until buyer receives and inspects batch telemetry receipts.",
       },
       {
-        id: "step-3",
-        stepNumber: "03",
+        id: "stage-delivered",
+        stepNumber: "Delivered",
         icon: "delivery",
-        title: "Transparent Harvest & Delivery",
+        title: "Precision Harvest & Cold Transit",
         description:
-          "Orders are harvested exactly at peak sugar and moisture maturity. Temperature-controlled transit brings produce to your doorstep within 24 hours.",
+          "Crops harvested at peak Brix maturity and dispatched within 24 hours in temperature-controlled routing with cryptographic batch verification.",
         footerLeft: {
           icon: "qr",
           text: "QR Batch Trace",

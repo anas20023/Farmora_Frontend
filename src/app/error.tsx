@@ -10,8 +10,8 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
   }, [error]);
 
   return (
-    <main className="grid min-h-screen place-items-center bg-background px-4 text-foreground">
-      <section className="w-full max-w-md rounded-2xl border border-border bg-surface p-8 text-center shadow-xl shadow-black/5">
+    <main className="grid min-h-[100svh] place-items-center bg-background px-4 text-foreground">
+      <section className="w-full max-w-md rounded bg-surface p-8 text-center border border-border">
         <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-danger/10 text-danger">
           <AlertTriangle aria-hidden="true" className="size-7" />
         </span>

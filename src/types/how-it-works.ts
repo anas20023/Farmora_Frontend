@@ -7,7 +7,7 @@ export interface WorkflowBadgeItem {
 
 export interface WorkflowStepItem {
   id: string;
-  stepNumber: string; // e.g. "01", "02", "03"
+  stepNumber: string;
   icon: WorkflowStepIcon;
   title: string;
   description: string;

@@ -3,23 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
-import { Button, Separator } from "@heroui/react";
-import {
-  ArrowLeft,
-  Check,
-  Eye,
-  EyeOff,
-  Lock,
-  Mail,
-  Moon,
-  ShieldCheck,
-  ShoppingBag,
-  Sprout,
-  Sun,
-  Tractor,
-  User,
-  UserPlus,
-} from "lucide-react";
+import { ArrowLeft, Check, Eye, EyeOff, Lock, Mail, Moon, ShoppingBag, Sprout, Sun, Tractor, User } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
@@ -29,21 +13,18 @@ type UserRole = "farmer" | "buyer";
 export default function RegisterPage() {
   const router = useRouter();
 
-  // Form states
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<UserRole>("farmer");
   const [agreeTerms, setAgreeTerms] = useState(true);
 
-  // UI interaction states
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Initialize and synchronize dark/light theme matching globals.css
   useEffect(() => {
     const storedTheme = window.localStorage.getItem("farmora-theme");
     const shouldUseDark = storedTheme
@@ -67,19 +48,6 @@ export default function RegisterPage() {
     window.localStorage.setItem("farmora-theme", nextIsDark ? "dark" : "light");
   };
 
-  // Password strength calculation
-  const getPasswordStrength = () => {
-    if (!password) return 0;
-    let score = 0;
-    if (password.length >= 8) score += 1;
-    if (/[A-Z]/.test(password)) score += 1;
-    if (/[0-9]/.test(password)) score += 1;
-    if (/[^A-Za-z0-9]/.test(password)) score += 1;
-    return score;
-  };
-
-  const passwordStrength = getPasswordStrength();
-
   const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMessage("");
@@ -100,447 +68,275 @@ export default function RegisterPage() {
     }
 
     setIsLoading(true);
-    try {
-      await authClient.signUp.email({
-      name: name.trim(),
-      email: email.trim(),
-      wished_role: role.trim(),
-      password: password,
-      callbackURL: "/login",
-    }, {
-      onSuccess: () => {
-        // Better Auth intentionally returns the same response for an existing
-        // email, so this message avoids leaking whether an account exists.
-        toast.success("Check your inbox for the next step. If you already have an account, please sign in instead.",{
 
-        })
-        router.push('/login')
-      },
-      onError: (ctx) => {
-              toast.error(ctx.error instanceof Error ? ctx.error.message : "Something went wrong")
-      }
-      });
-    } catch (error: unknown) {
-      const message =
-        error instanceof Error ? error.message : "Something went wrong";
-      setErrorMessage(message);
-      toast.error(message);
+    try {
+      await authClient.signUp.email(
+        {
+          name: name.trim(),
+          email: email.trim(),
+          password: password,
+          wished_role: role,
+          callbackURL: "/dashboard",
+        },
+        {
+          onError: (ctx) => {
+            setErrorMessage(ctx.error.message || "Failed to create account.");
+            toast.error(ctx.error.message || "Registration failed");
+          },
+          onSuccess: () => {
+            toast.success("Account created successfully. Welcome to Farmora!");
+            router.replace("/dashboard");
+          },
+        }
+      );
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Something went wrong";
+      setErrorMessage(msg);
+      toast.error(msg);
     } finally {
       setIsLoading(false);
     }
-
   };
 
-  const handleGoogleJoin = async () => {
+  const handleGoogleSignup = async () => {
     setIsGoogleLoading(true);
     try {
       if (authClient?.signIn?.social) {
         await authClient.signIn.social({
           provider: "google",
-          callbackURL: "/login",
-        }).catch((err) => {
-          toast.error(err.message || "Someting went wrong")
+          callbackURL: "/dashboard",
         });
       }
     } catch {
-      // Graceful fallback
-      toast.error("Someting went wrong")
+      toast.error("Google sign up failed");
     } finally {
-      // Per user requirement: navigate to /login route
-      setTimeout(() => {
-        router.push("/login");
-        toast.success("Google Authentication Sucessful")
-      }, 500);
+      setIsGoogleLoading(false);
     }
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col justify-between bg-background text-foreground transition-colors duration-200">
-      {/* Background ambient decorative glows */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 overflow-hidden"
-      >
-        <div className="absolute -top-36 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-accent/15 blur-3xl" />
-        <div className="absolute -bottom-36 left-10 h-80 w-80 rounded-full bg-accent/10 blur-3xl" />
-        <div className="absolute top-1/3 -right-20 h-72 w-72 rounded-full bg-accent/10 blur-3xl" />
-      </div>
-
-      {/* Top Navigation Bar */}
-      <header className="relative z-10 flex w-full items-center justify-between px-4 py-4 sm:px-8">
+    <div className="flex min-h-[100svh] flex-col justify-between bg-background text-foreground">
+      {/* Top Bar */}
+      <header className="flex w-full items-center justify-between px-6 py-4">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:bg-surface-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus"
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted transition-colors hover:text-foreground"
         >
-          <ArrowLeft aria-hidden="true" className="size-4" />
+          <ArrowLeft className="size-4" />
           <span>Back to Home</span>
         </Link>
 
-        <div className="flex items-center gap-2">
-          <Button
-            aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
-            isIconOnly
-            size="sm"
-            variant="ghost"
-            onPress={toggleTheme}
-            className="rounded-lg border border-border text-foreground hover:bg-surface-secondary"
-          >
-            {isDark ? (
-              <Sun aria-hidden="true" className="size-4" />
-            ) : (
-              <Moon aria-hidden="true" className="size-4" />
-            )}
-          </Button>
-        </div>
+        <button
+          type="button"
+          aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
+          onClick={toggleTheme}
+          className="flex size-9 items-center justify-center rounded border border-border bg-surface text-muted hover:text-foreground"
+        >
+          {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+        </button>
       </header>
 
-      {/* Main Content Area */}
-      <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 py-6 sm:px-6 lg:px-8">
+      {/* Main Form */}
+      <main className="flex flex-1 flex-col items-center justify-center px-4 py-8 sm:px-6">
         <div className="w-full max-w-lg">
-          {/* Header Branding */}
           <div className="flex flex-col items-center text-center">
-            <Link
-              href="/"
-              className="group mb-3 inline-flex flex-col items-center transition-transform hover:scale-105 focus-visible:outline-none"
-            >
-              <span className="grid size-12 place-items-center rounded-2xl bg-accent text-accent-foreground shadow-lg shadow-accent/25 ring-2 ring-accent/20">
-                <Sprout aria-hidden="true" className="size-7" />
-              </span>
-            </Link>
+            <span className="grid size-11 place-items-center rounded bg-accent text-accent-foreground mb-3">
+              <Sprout className="size-6" />
+            </span>
 
-            <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Join Farmora
+            <h1 className="font-display text-3xl font-bold tracking-tight text-foreground">
+              Register for Farmora
             </h1>
 
-            <p className="mt-1 text-sm font-medium text-foreground/90 sm:text-base">
-              Smart Agriculture Marketplace
-            </p>
-
-            <p className="mt-1 max-w-sm text-xs text-muted sm:text-sm">
-              Create your account to start trading, selling, and sourcing agricultural goods
+            <p className="mt-1 text-sm text-muted">
+              Choose your trading role to set up your console
             </p>
           </div>
 
-          {/* Registration Card */}
-          <div className="mt-6 rounded-2xl border border-border bg-surface p-5 shadow-xl shadow-black/5 backdrop-blur-sm sm:p-8 dark:shadow-black/25">
-            <div className="mb-5">
-              <h2 className="text-lg font-semibold tracking-tight text-foreground sm:text-xl">
-                Create your account
-              </h2>
-              <p className="text-xs text-muted sm:text-sm">
-                Select your account role and enter your details below
-              </p>
-            </div>
-
-            {errorMessage ? (
-              <div className="mb-4 rounded-lg border border-danger/40 bg-danger/10 p-3 text-xs text-danger sm:text-sm">
+          <div data-ui="true" className="mt-8 rounded bg-surface p-6 sm:p-8 text-foreground border border-border">
+            {errorMessage && (
+              <div className="mb-4 rounded bg-danger/10 p-3 text-xs text-danger">
                 {errorMessage}
               </div>
-            ) : null}
-            <form onSubmit={handleRegister} className="space-y-4" noValidate={false}>
-              {/* Role Selection Options: Farmer or Buyer */}
-              <div className="space-y-2">
-                <label className="block text-xs font-medium text-foreground sm:text-sm">
-                  I am registering as a:
+            )}
+
+            <form onSubmit={handleRegister} className="space-y-4">
+              {/* Role Selection */}
+              <div>
+                <label className="block text-xs font-semibold text-muted mb-2">
+                  Account Type
                 </label>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  {/* Farmer Option */}
+                <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => setRole("farmer")}
-                    className={`relative flex flex-col items-start rounded-xl border p-3.5 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${role === "farmer"
-                      ? "border-accent bg-accent/10 shadow-sm ring-1 ring-accent"
-                      : "border-border bg-field-background hover:bg-surface-secondary"
-                      }`}
+                    className={`flex items-center gap-3 rounded p-3 text-left transition-colors border ${
+                      role === "farmer"
+                        ? "border-accent bg-accent/10 text-foreground"
+                        : "border-border bg-background text-muted hover:text-foreground"
+                    }`}
                   >
-                    <div className="flex w-full items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`grid size-8 place-items-center rounded-lg ${role === "farmer"
-                            ? "bg-accent text-accent-foreground"
-                            : "bg-surface-secondary text-muted"
-                            }`}
-                        >
-                          <Tractor aria-hidden="true" className="size-4" />
-                        </span>
-                        <span className="text-sm font-semibold text-foreground">
-                          Farmer
-                        </span>
-                      </div>
-                      {role === "farmer" ? (
-                        <span className="grid size-5 place-items-center rounded-full bg-accent text-accent-foreground">
-                          <Check aria-hidden="true" className="size-3" />
-                        </span>
-                      ) : null}
+                    <Tractor className="size-5 shrink-0 text-accent" />
+                    <div>
+                      <div className="text-xs font-bold text-foreground">Producer / Farmer</div>
+                      <div className="text-[11px] text-muted">Sell harvests & monitor IoT</div>
                     </div>
-                    <p className="mt-2 text-xs text-muted">
-                      Sell agricultural harvests, list crops & manage direct farm supplies
-                    </p>
                   </button>
 
-                  {/* Buyer Option */}
                   <button
                     type="button"
                     onClick={() => setRole("buyer")}
-                    className={`relative flex flex-col items-start rounded-xl border p-3.5 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus ${role === "buyer"
-                      ? "border-accent bg-accent/10 shadow-sm ring-1 ring-accent"
-                      : "border-border bg-field-background hover:bg-surface-secondary"
-                      }`}
+                    className={`flex items-center gap-3 rounded p-3 text-left transition-colors border ${
+                      role === "buyer"
+                        ? "border-accent bg-accent/10 text-foreground"
+                        : "border-border bg-background text-muted hover:text-foreground"
+                    }`}
                   >
-                    <div className="flex w-full items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`grid size-8 place-items-center rounded-lg ${role === "buyer"
-                            ? "bg-accent text-accent-foreground"
-                            : "bg-surface-secondary text-muted"
-                            }`}
-                        >
-                          <ShoppingBag aria-hidden="true" className="size-4" />
-                        </span>
-                        <span className="text-sm font-semibold text-foreground">
-                          Buyer
-                        </span>
-                      </div>
-                      {role === "buyer" ? (
-                        <span className="grid size-5 place-items-center rounded-full bg-accent text-accent-foreground">
-                          <Check aria-hidden="true" className="size-3" />
-                        </span>
-                      ) : null}
+                    <ShoppingBag className="size-5 shrink-0 text-accent" />
+                    <div>
+                      <div className="text-xs font-bold text-foreground">Buyer / Enterprise</div>
+                      <div className="text-[11px] text-muted">Source verified batches</div>
                     </div>
-                    <p className="mt-2 text-xs text-muted">
-                      Source fresh farm produce, purchase wholesale & negotiate orders
-                    </p>
                   </button>
                 </div>
               </div>
 
-              {/* Name Field */}
-              <div className="space-y-1.5">
+              {/* Name */}
+              <div>
                 <label
-                  htmlFor="register-name"
-                  className="block text-xs font-medium text-foreground sm:text-sm"
+                  htmlFor="name"
+                  className="block text-xs font-semibold text-muted mb-1.5"
                 >
-                  Full Name
+                  Full Name / Organization
                 </label>
                 <div className="relative flex items-center">
                   <span className="pointer-events-none absolute left-3 text-muted">
-                    <User aria-hidden="true" className="size-4" />
+                    <User className="size-4" />
                   </span>
                   <input
-                    id="register-name"
+                    id="name"
                     name="name"
                     type="text"
                     required
-                    autoComplete="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. Elena Rostova"
-                    className="h-10 w-full rounded-lg border border-border bg-field-background pl-9 pr-3 text-sm text-field-foreground placeholder:text-field-placeholder transition-colors focus:border-focus focus:outline-none focus:ring-1 focus:ring-focus"
+                    placeholder="Md. Rafiqul Islam"
+                    className="w-full rounded border border-border bg-background py-2.5 pl-10 pr-3 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
                   />
                 </div>
               </div>
 
-              {/* Email Field */}
-              <div className="space-y-1.5">
+              {/* Email */}
+              <div>
                 <label
-                  htmlFor="register-email"
-                  className="block text-xs font-medium text-foreground sm:text-sm"
+                  htmlFor="email"
+                  className="block text-xs font-semibold text-muted mb-1.5"
                 >
                   Email Address
                 </label>
                 <div className="relative flex items-center">
                   <span className="pointer-events-none absolute left-3 text-muted">
-                    <Mail aria-hidden="true" className="size-4" />
+                    <Mail className="size-4" />
                   </span>
                   <input
-                    id="register-email"
+                    id="email"
                     name="email"
                     type="email"
-                    required
                     autoComplete="email"
+                    required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="farmer@farmora.com"
-                    className="h-10 w-full rounded-lg border border-border bg-field-background pl-9 pr-3 text-sm text-field-foreground placeholder:text-field-placeholder transition-colors focus:border-focus focus:outline-none focus:ring-1 focus:ring-focus"
+                    placeholder="rafiq@barindagro.com"
+                    className="w-full rounded border border-border bg-background py-2.5 pl-10 pr-3 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
                   />
                 </div>
               </div>
 
-              {/* Password Field */}
-              <div className="space-y-1.5">
+              {/* Password */}
+              <div>
                 <label
-                  htmlFor="register-password"
-                  className="block text-xs font-medium text-foreground sm:text-sm"
+                  htmlFor="password"
+                  className="block text-xs font-semibold text-muted mb-1.5"
                 >
-                  Password
+                  Password (min 8 characters)
                 </label>
                 <div className="relative flex items-center">
                   <span className="pointer-events-none absolute left-3 text-muted">
-                    <Lock aria-hidden="true" className="size-4" />
+                    <Lock className="size-4" />
                   </span>
                   <input
-                    id="register-password"
+                    id="password"
                     name="password"
                     type={showPassword ? "text" : "password"}
-                    required
                     autoComplete="new-password"
+                    required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Create a strong password"
-                    className="h-10 w-full rounded-lg border border-border bg-field-background pl-9 pr-10 text-sm text-field-foreground placeholder:text-field-placeholder transition-colors focus:border-focus focus:outline-none focus:ring-1 focus:ring-focus"
+                    placeholder="••••••••"
+                    className="w-full rounded border border-border bg-background py-2.5 pl-10 pr-10 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
                   />
                   <button
                     type="button"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2.5 rounded p-1 text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus"
+                    className="absolute right-3 text-muted hover:text-foreground"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
-                    {showPassword ? (
-                      <EyeOff aria-hidden="true" className="size-4" />
-                    ) : (
-                      <Eye aria-hidden="true" className="size-4" />
-                    )}
+                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                   </button>
                 </div>
-
-                {/* Password Strength Indicator */}
-                {password ? (
-                  <div className="pt-1">
-                    <div className="flex h-1.5 w-full gap-1 overflow-hidden rounded-full bg-surface-secondary">
-                      <div
-                        className={`h-full flex-1 transition-all ${passwordStrength >= 1 ? "bg-danger" : "bg-transparent"
-                          }`}
-                      />
-                      <div
-                        className={`h-full flex-1 transition-all ${passwordStrength >= 2 ? "bg-warning" : "bg-transparent"
-                          }`}
-                      />
-                      <div
-                        className={`h-full flex-1 transition-all ${passwordStrength >= 3 ? "bg-accent" : "bg-transparent"
-                          }`}
-                      />
-                      <div
-                        className={`h-full flex-1 transition-all ${passwordStrength >= 4 ? "bg-accent" : "bg-transparent"
-                          }`}
-                      />
-                    </div>
-                    <div className="mt-1 flex justify-between text-[11px] text-muted">
-                      <span>
-                        {passwordStrength <= 1 && "Weak password"}
-                        {passwordStrength === 2 && "Moderate password"}
-                        {passwordStrength === 3 && "Strong password"}
-                        {passwordStrength >= 4 && "Very strong password"}
-                      </span>
-                      <span>Min 8 characters</span>
-                    </div>
-                  </div>
-                ) : null}
               </div>
 
-              {/* Terms and Conditions */}
-              <div className="flex items-start gap-2 pt-1">
+              {/* Terms */}
+              <div className="flex items-start">
                 <input
-                  id="agree-terms"
+                  id="terms"
                   type="checkbox"
                   checked={agreeTerms}
                   onChange={(e) => setAgreeTerms(e.target.checked)}
-                  className="mt-0.5 size-4 rounded border-border accent-accent focus:ring-focus"
+                  className="mt-0.5 size-4 rounded border-border accent-accent"
                 />
-                <label
-                  htmlFor="agree-terms"
-                  className="text-xs text-muted leading-snug cursor-pointer select-none"
-                >
-                  I agree to the{" "}
-                  <span className="font-medium text-foreground hover:underline">
-                    Terms of Service
-                  </span>{" "}
-                  and{" "}
-                  <span className="font-medium text-foreground hover:underline">
-                    Privacy Policy
-                  </span>
+                <label htmlFor="terms" className="ml-2 text-xs text-muted leading-tight">
+                  I agree to the Farmora Escrow Trade Agreement, Telemetry SLAs, and verified harvest guidelines.
                 </label>
               </div>
 
-              {/* Submit Registration Button (HeroUI v3) */}
-              <div className="pt-2">
-                <Button
-                  type="submit"
-                  variant="primary"
-                  size="md"
-                  fullWidth
-                  isDisabled={isLoading}
-                  className="h-11 font-medium shadow-md shadow-accent/20 transition-all hover:opacity-95"
-                >
-                  {isLoading ? (
-                    <span className="flex items-center gap-2">
-                      <Sprout aria-hidden="true" className="size-4 animate-spin" />
-                      <span>Creating account...</span>
-                    </span>
-                  ) : (
-                    <span className="flex items-center justify-center gap-2">
-                      <UserPlus aria-hidden="true" className="size-4" />
-                      <span>Join Farmora</span>
-                    </span>
-                  )}
-                </Button>
-              </div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full rounded bg-accent py-2.5 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+              >
+                {isLoading ? "Creating Account..." : "Complete Registration"}
+              </button>
             </form>
 
-            {/* Separator */}
-            <div className="relative my-6 flex items-center justify-center">
-              <Separator className="w-full bg-border" />
-              <span className="absolute bg-surface px-3 text-xs uppercase tracking-wider text-muted">
-                or continue with
+            <div className="my-6 text-center">
+              <span className="text-xs text-muted">
+                or sign up with
               </span>
             </div>
 
-            {/* Continue with Google Button (HeroUI v3) */}
-            <Button
+            <button
               type="button"
-              variant="outline"
-              size="md"
-              fullWidth
-              isDisabled={isGoogleLoading}
-              onPress={handleGoogleJoin}
-              className="h-11 border-border bg-surface font-medium text-foreground transition-colors hover:bg-surface-secondary"
+              onClick={handleGoogleSignup}
+              disabled={isGoogleLoading}
+              className="flex w-full items-center justify-center gap-2 rounded border border-border bg-surface py-2.5 text-sm font-medium text-foreground hover:bg-surface-secondary"
             >
-              {isGoogleLoading ? (
-                <span className="flex items-center gap-2">
-                  <Sprout aria-hidden="true" className="size-4 animate-spin" />
-                  <span>Connecting to Google...</span>
-                </span>
-              ) : (
-                <span className="flex items-center justify-center gap-2.5">
-                  <FcGoogle aria-hidden="true" className="size-4 text-accent" />
-                  <span>Continue with Google</span>
-                </span>
-              )}
-            </Button>
-
-            {/* Link to Login */}
-            <div className="mt-6 flex flex-col items-center gap-3 text-center text-xs text-muted">
-              <p>
-                Already have an account?{" "}
-                <Link
-                  href="/login"
-                  className="font-medium text-accent hover:underline focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-focus"
-                >
-                  Log in to your account
-                </Link>
-              </p>
-
-              <div className="flex items-center gap-1.5 text-muted/70">
-                <ShieldCheck aria-hidden="true" className="size-3.5 text-accent" />
-                <span>Protected with end-to-end agro marketplace security</span>
-              </div>
-            </div>
+              <FcGoogle className="size-4" />
+              <span>Google Registration</span>
+            </button>
           </div>
+
+          <p className="mt-6 text-center text-xs text-muted">
+            Already registered?{" "}
+            <Link href="/login" className="font-semibold text-accent hover:underline">
+              Sign in to your account
+            </Link>
+          </p>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 py-4 text-center text-xs text-muted">
-        <p>&copy; {new Date().getFullYear()} Farmora Inc. All rights reserved.</p>
+      <footer className="py-4 text-center text-xs text-muted">
+        Farmora Technologies · Regulated Escrow & Telemetry Platform
       </footer>
     </div>
   );

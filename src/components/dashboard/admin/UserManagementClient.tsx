@@ -190,11 +190,12 @@ export default function UserManagementClient({
             </div>
 
             <div
+                data-ui="true"
                 className={`overflow-hidden rounded-lg border border-border bg-surface ${isPending ? 'opacity-60' : ''}`}
                 aria-busy={isPending}>
                 <div className="overflow-x-auto">
                     <table className="w-full min-w-225 text-left text-sm">
-                        <thead className="border-b border-border bg-surface-secondary text-xs uppercase tracking-wide text-muted">
+                        <thead data-ui="true" className="border-b border-border bg-surface-secondary text-xs font-medium text-muted">
                             <tr>
                                 <th className="px-5 py-3 font-medium">User</th>
                                 <th className="px-5 py-3 font-medium">Role</th>
@@ -209,7 +210,7 @@ export default function UserManagementClient({
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-border">
+                        <tbody data-ui="true" className="divide-y divide-border">
                             {users.map((user) => (
                                 <tr
                                     key={user.id}
@@ -320,7 +321,7 @@ export default function UserManagementClient({
                         </tbody>
                     </table>
                 </div>
-                <div className="flex items-center justify-between border-t border-border px-4 py-3 text-sm">
+                <div data-ui="true" className="flex items-center justify-between border-t border-border px-4 py-3 text-sm">
                     <p className="text-muted">
                         Page {page} of {totalPages}
                     </p>
@@ -349,7 +350,7 @@ export default function UserManagementClient({
                 <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4">
                     <form
                         onSubmit={submitPassword}
-                        className="w-full max-w-md rounded-lg bg-surface p-6 shadow-xl">
+                        className="w-full max-w-md rounded-lg bg-surface p-6 border border-border">
                         <h2 className="text-lg font-semibold">
                             Set user password
                         </h2>

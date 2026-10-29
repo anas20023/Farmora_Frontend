@@ -1,28 +1,22 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Farmora | Smart Agriculture Marketplace",
-  description: "Smart Agriculture Marketplace",
+  title: "Farmora · Smart Agriculture Marketplace & IoT Telemetry",
+  description: "Direct-to-buyer agricultural commerce powered by real-time soil telemetry, IoT sensor monitoring, and ML harvest predictions.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${geistSans.className} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
+    <html lang="en" suppressHydrationWarning className="h-full antialiased">
+      <body className="min-h-full flex flex-col bg-background text-foreground">
         {children}
-        <Toaster />
+        <Toaster position="top-right" />
       </body>
     </html>
   );

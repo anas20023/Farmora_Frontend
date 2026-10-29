@@ -33,12 +33,73 @@ function ResetPasswordForm() {
     }
   }
 
-  return <main className="grid min-h-screen place-items-center bg-background px-4 text-foreground"><section className="w-full max-w-md rounded-2xl border border-border bg-surface p-8 shadow-xl shadow-black/5"><div className="text-center"><span className="mx-auto grid size-12 place-items-center rounded-2xl bg-accent text-accent-foreground"><Sprout className="size-6" /></span><h1 className="mt-4 text-2xl font-bold">Reset your password</h1></div>{invalidToken ? <p className="mt-5 rounded-lg border border-danger/30 bg-danger/10 p-3 text-sm text-danger">This reset link is invalid or has expired. Request a new one from the sign-in page.</p> : <form onSubmit={handleSubmit} className="mt-6 space-y-4"><label className="block text-sm font-medium">New password<input required minLength={8} type="password" value={password} onChange={(event) => setPassword(event.target.value)} className="mt-1.5 h-10 w-full rounded-lg border border-border bg-field-background px-3" /></label><label className="block text-sm font-medium">Confirm new password<input required minLength={8} type="password" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} className="mt-1.5 h-10 w-full rounded-lg border border-border bg-field-background px-3" /></label><button disabled={loading} className="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-accent font-semibold text-accent-foreground disabled:opacity-60"><KeyRound className="size-4" />{loading ? "Resetting…" : "Reset password"}</button></form>}<Link href="/login" className="mt-5 block text-center text-sm font-medium text-accent hover:underline">Back to sign in</Link></section></main>;
+  return (
+    <main className="grid min-h-[100svh] place-items-center bg-background px-4 text-foreground">
+      <section className="w-full max-w-md rounded bg-surface p-8 text-foreground border border-border">
+        <div className="text-center">
+          <span className="mx-auto grid size-12 place-items-center rounded bg-accent text-accent-foreground mb-3">
+            <Sprout className="size-6" />
+          </span>
+          <h1 className="font-display text-2xl font-bold">Reset Your Password</h1>
+          <p className="text-xs text-muted mt-1">Create a new secure passphrase for your Farmora account</p>
+        </div>
+
+        {invalidToken ? (
+          <div className="mt-5 rounded bg-danger/10 p-3 text-xs text-danger">
+            This reset link is invalid or has expired. Request a new one from the sign-in page.
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-muted mb-1.5">
+                New password
+              </label>
+              <input
+                required
+                minLength={8}
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                className="w-full rounded border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-accent"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-muted mb-1.5">
+                Confirm new password
+              </label>
+              <input
+                required
+                minLength={8}
+                type="password"
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
+                className="w-full rounded border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-accent"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="flex w-full items-center justify-center gap-2 rounded bg-accent py-2.5 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+            >
+              <KeyRound className="size-4" />
+              <span>{loading ? "Resetting…" : "Set New Password"}</span>
+            </button>
+          </form>
+        )}
+
+        <Link href="/login" className="mt-6 block text-center text-xs font-semibold text-accent hover:underline">
+          Back to Sign In
+        </Link>
+      </section>
+    </main>
+  );
 }
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<main className="min-h-screen bg-background" aria-busy="true" />}>
+    <Suspense fallback={<main className="min-h-[100svh] bg-background" aria-busy="true" />}>
       <ResetPasswordForm />
     </Suspense>
   );

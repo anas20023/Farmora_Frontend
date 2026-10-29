@@ -30,7 +30,7 @@ export default function FeatureCard({ feature }: FeatureCardProps) {
   };
 
   return (
-    <div className="group flex items-start gap-4 rounded-2xl border border-[#d6ecde] bg-white p-4.5 shadow-xs transition-all duration-200 hover:border-[#134e3a]/40 hover:shadow-md dark:border-emerald-800/40 dark:bg-[#10241b] dark:hover:border-emerald-700/60 sm:p-5">
+    <div className="group flex items-start gap-4 rounded-2xl border border-[#d6ecde] bg-white p-4.5 hover:border-[#134e3a]/40 dark:border-emerald-800/40 dark:bg-[#10241b] dark:hover:border-emerald-700/60 sm:p-5">
       {renderIcon()}
       <div className="min-w-0 flex-1">
         <h3 className="text-sm font-semibold tracking-tight text-[#0a3826] transition-colors group-hover:text-[#134e3a] dark:text-white dark:group-hover:text-emerald-300 sm:text-base">

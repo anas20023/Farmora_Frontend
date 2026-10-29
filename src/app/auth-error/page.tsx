@@ -20,8 +20,8 @@ const authErrors: Record<string, AuthErrorDetails> = {
     message: "The sign-in link is invalid or has expired. Please start again from the login page.",
   },
   unauthorized: {
-    title: "You don't have access to that page",
-    message: "Your account does not have permission to view this area.",
+    title: "Access Restricted",
+    message: "Your account does not have permission to view this console view.",
   },
 };
 
@@ -32,28 +32,28 @@ export default async function AuthErrorPage({
 }) {
   const { error } = await searchParams;
   const details = authErrors[error ?? ""] ?? {
-    title: "We couldn’t sign you in",
+    title: "Authentication Interrupted",
     message: "Something interrupted authentication. Please try again or use a different sign-in method.",
   };
 
   return (
-    <main className="grid min-h-screen place-items-center bg-background px-4 text-foreground">
-      <section className="w-full max-w-md rounded-2xl border border-border bg-surface p-8 text-center shadow-xl shadow-black/5">
-        <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-danger/10 text-danger">
-          <AlertTriangle aria-hidden="true" className="size-7" />
+    <main className="grid min-h-[100svh] place-items-center bg-background px-4 text-foreground">
+      <section className="w-full max-w-md rounded bg-surface p-8 text-center text-foreground border border-border">
+        <span className="mx-auto grid size-12 place-items-center rounded bg-danger/10 text-danger">
+          <AlertTriangle aria-hidden="true" className="size-6" />
         </span>
-        <div className="mt-5 flex items-center justify-center gap-2 text-accent">
+        <div className="mt-4 flex items-center justify-center gap-2 text-accent">
           <Sprout aria-hidden="true" className="size-4" />
-          <span className="text-sm font-semibold">Farmora</span>
+          <span className="font-display font-bold">Farmora</span>
         </div>
-        <h1 className="mt-3 text-xl font-bold">{details.title}</h1>
-        <p className="mt-2 text-sm leading-6 text-muted">{details.message}</p>
+        <h1 className="mt-3 font-display text-2xl font-bold">{details.title}</h1>
+        <p className="mt-2 text-sm leading-relaxed text-muted">{details.message}</p>
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
-          <Link href="/login" className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-accent px-4 text-sm font-semibold text-accent-foreground hover:opacity-90">
+          <Link href="/login" className="inline-flex h-10 items-center justify-center gap-2 rounded bg-accent px-4 text-xs font-semibold text-accent-foreground hover:opacity-90">
             <ArrowLeft aria-hidden="true" className="size-4" />
             Back to sign in
           </Link>
-          <Link href="/register" className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-border px-4 text-sm font-semibold hover:bg-surface-secondary">
+          <Link href="/register" className="inline-flex h-10 items-center justify-center gap-2 rounded border border-border bg-surface px-4 text-xs font-semibold text-foreground hover:bg-surface-secondary">
             <Mail aria-hidden="true" className="size-4" />
             Create account
           </Link>
