@@ -2,16 +2,11 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+//import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import {
     Activity,
     ArrowUpRight,
-    Check,
-    CheckCircle2,
-    Cpu,
-    Droplets,
-    MapPin,
     ShieldCheck,
     X,
 } from 'lucide-react';
@@ -22,7 +17,7 @@ interface HeroClientProps {
 }
 
 export default function HeroClient({ data }: HeroClientProps) {
-    const router = useRouter();
+   // const router = useRouter();
     const [isReserveModalOpen, setIsReserveModalOpen] = useState(false);
     const [selectedCrop, setSelectedCrop] = useState('Bogura Organic Tomatoes');
     const [reserveKg, setReserveKg] = useState<number>(50);
@@ -89,7 +84,7 @@ export default function HeroClient({ data }: HeroClientProps) {
             tag: 'Grade A Export',
         },
     ];
-
+    console.log(data)
     return (
         <section className="relative w-full overflow-hidden bg-background">
             {/* Split 50/50 stage */}
