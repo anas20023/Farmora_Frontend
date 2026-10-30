@@ -1,11 +1,10 @@
-import React from 'react'
+import VerificationClient from '@/components/dashboard/admin/VerificationClient';
 
-const VerificationRequests = () => {
-  return (
-    <div>
-      VerificationRequests
-    </div>
-  )
+export const metadata = {
+    title: 'Verification queue | Farmora Admin',
+    description: 'Review and action farmer and buyer role applications.',
+};
+
+export default function VerificationRequestsPage() {
+    return <VerificationClient />;
 }
-
-export default VerificationRequests
