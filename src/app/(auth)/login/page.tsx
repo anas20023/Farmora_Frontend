@@ -81,6 +81,9 @@ export default function LoginPage() {
         await authClient.signIn.social({
           provider: "google",
           callbackURL: "/dashboard",
+          // New Google accounts must complete registration first so they can
+          // choose the required wished role.
+          errorCallbackURL: "/register",
         }).catch((err) => {
           toast.error(err instanceof Error ? err.message : "Google sign in failed");
         });
@@ -259,6 +262,9 @@ export default function LoginPage() {
               <FcGoogle className="size-4" />
               <span>Google Single Sign-On</span>
             </button>
+            <p className="mt-3 text-center text-xs text-muted">
+              New to Farmora? <Link href="/register" className="font-semibold text-accent hover:underline">Register with Google and choose your role</Link>.
+            </p>
           </div>
 
           <p className="mt-6 text-center text-xs text-muted">

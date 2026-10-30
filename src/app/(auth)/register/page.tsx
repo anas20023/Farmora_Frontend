@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
-import { ArrowLeft, Check, Eye, EyeOff, Lock, Mail, Moon, ShoppingBag, Sun, Tractor, User } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Lock, Mail, Moon, ShoppingBag, Sun, Tractor, User } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
@@ -17,7 +17,7 @@ export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<UserRole>("farmer");
+  const [role, setRole] = useState<UserRole | null>(null);
   const [agreeTerms, setAgreeTerms] = useState(true);
 
   const [showPassword, setShowPassword] = useState(false);
@@ -53,7 +53,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setErrorMessage("");
 
-    if (!name.trim() || !email.trim() || !password) {
+    if (!name.trim() || !email.trim() || !password || !role) {
       setErrorMessage("Please fill in all required fields.");
       return;
     }
@@ -100,12 +100,32 @@ export default function RegisterPage() {
   };
 
   const handleGoogleSignup = async () => {
+    setErrorMessage("");
+
+    if (!role) {
+      const message = "Please select an account type before continuing with Google.";
+      setErrorMessage(message);
+      toast.error(message);
+      return;
+    }
+
+    if (!agreeTerms) {
+      const message = "Please accept the terms of service to proceed.";
+      setErrorMessage(message);
+      toast.error(message);
+      return;
+    }
+
     setIsGoogleLoading(true);
     try {
       if (authClient?.signIn?.social) {
         await authClient.signIn.social({
           provider: "google",
           callbackURL: "/dashboard",
+          requestSignUp: true,
+          additionalData: {
+            wished_role: role,
+          },
         });
       }
     } catch {
@@ -163,7 +183,7 @@ export default function RegisterPage() {
               {/* Role Selection */}
               <div>
                 <label className="block text-xs font-semibold text-muted mb-2">
-                  Account Type
+                  Account Type <span className="text-danger">*</span>
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <button

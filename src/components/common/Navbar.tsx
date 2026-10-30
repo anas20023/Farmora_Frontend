@@ -18,6 +18,9 @@ import {
 } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 import Image from 'next/image';
+import RoleApplicationDialog from '@/components/role-application/RoleApplicationDialog';
+import { useRoleApplicationStatus } from '@/components/role-application/RoleApplicationStatus';
+import type { ApplicableRole } from '@/lib/api/role-applications';
 
 const navigation = [
     { label: 'Browse Marketplace', href: '/marketplace' },
@@ -34,11 +37,16 @@ function initials(name?: string | null) {
         .toUpperCase();
 }
 
+function asApplicableRole(role?: string | null): ApplicableRole | null {
+    return role === 'farmer' || role === 'buyer' ? role : null;
+}
+
 export default function Navbar() {
     const router = useRouter();
     const { data: session } = authClient.useSession();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isDark, setIsDark] = useState(false);
+    const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
 
     useEffect(() => {
         const storedTheme = window.localStorage.getItem('farmora-theme');
@@ -69,6 +77,29 @@ export default function Navbar() {
 
     const closeMobileMenu = () => setIsMobileMenuOpen(false);
     const user = session?.user;
+    const wishedRole = asApplicableRole(user?.wished_role);
+    const currentRole = String(user?.role ?? 'user');
+    const needsVerification = Boolean(user && wishedRole && wishedRole !== currentRole);
+    const {
+        application,
+        refresh: refreshApplication,
+        setApplication,
+    } = useRoleApplicationStatus(needsVerification);
+    const applicationStatus = application?.applicationStatus?.toUpperCase();
+    const verificationLabel =
+        applicationStatus === 'PENDING'
+            ? 'Verification pending'
+            : applicationStatus === 'REJECTED'
+              ? 'Update verification'
+              : `Become a Verified ${wishedRole ? wishedRole.charAt(0).toUpperCase() + wishedRole.slice(1) : 'Member'}`;
+
+    const openRoleApplication = () => {
+        if (applicationStatus === 'PENDING') {
+            router.push('/profile');
+            return;
+        }
+        setIsRoleDialogOpen(true);
+    };
 
     return (
         <header
@@ -101,17 +132,12 @@ export default function Navbar() {
                             {item.label}
                         </Link>
                     ))}
-                    {user && user.wished_role !== user.role && (
+                    {needsVerification && (
                         <button
                             type="button"
+                            onClick={openRoleApplication}
                             className="inline-flex items-center gap-2 rounded bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 cursor-pointer">
-                            <span>
-                                Become a Verified{' '}
-                                {user?.wished_role
-                                    ? user.wished_role.charAt(0).toUpperCase() +
-                                      user.wished_role.slice(1)
-                                    : 'User'}
-                            </span>
+                            <span>{verificationLabel}</span>
                         </button>
                     )}
                 </div>
@@ -239,19 +265,15 @@ export default function Navbar() {
                             </Link>
                         ))}
 
-                        {user && user.wished_role !== user.role && (
+                        {needsVerification && (
                             <button
                                 type="button"
+                                onClick={() => {
+                                    closeMobileMenu();
+                                    openRoleApplication();
+                                }}
                                 className="inline-flex items-center gap-2 rounded text-sm font-semibold text-accent-background transition-opacity hover:opacity-90 cursor-pointer">
-                                <span>
-                                    Become Verified{' '}
-                                    {user?.wished_role
-                                        ? user.wished_role
-                                              .charAt(0)
-                                              .toUpperCase() +
-                                          user.wished_role.slice(1)
-                                        : 'User'}
-                                </span>
+                                <span>{verificationLabel}</span>
                                 <ArrowUpRight />
                             </button>
                         )}
@@ -268,6 +290,17 @@ export default function Navbar() {
                         )}
                     </div>
                 </div>
+            )}
+            {wishedRole && (
+                <RoleApplicationDialog
+                    isOpen={isRoleDialogOpen}
+                    role={wishedRole}
+                    onClose={() => setIsRoleDialogOpen(false)}
+                    onSubmitted={(nextApplication) => {
+                        setApplication(nextApplication);
+                        void refreshApplication();
+                    }}
+                />
             )}
         </header>
     );

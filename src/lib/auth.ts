@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { betterAuth } from 'better-auth';
-import { admin, username } from 'better-auth/plugins';
+import { getOAuthState } from 'better-auth/api';
+import { admin, jwt, username } from 'better-auth/plugins';
 import { PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
 import {
@@ -79,6 +80,17 @@ export const auth = betterAuth({
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID as string,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+            // Require new Google users to start from the registration form,
+            // where a wished role is mandatory.
+            disableImplicitSignUp: true,
+            // This runs before Better Auth validates additional user fields,
+            // so the selected OAuth state value becomes part of the new user.
+            mapProfileToUser: async () => {
+                const wishedRole = (await getOAuthState())?.wished_role;
+                return wishedRole === 'farmer' || wishedRole === 'buyer'
+                    ? { wished_role: wishedRole }
+                    : {};
+            },
         },
     },
     plugins: [
@@ -105,6 +117,7 @@ export const auth = betterAuth({
             },
         }),
         admin(),
+        jwt()
     ],
     advanced: {
         database: {

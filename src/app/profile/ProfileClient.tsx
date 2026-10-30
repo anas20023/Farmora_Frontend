@@ -37,6 +37,12 @@ import {
 import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
 import type { SerializableUserProfile } from "@/types/profile";
+import RoleApplicationDialog from "@/components/role-application/RoleApplicationDialog";
+import {
+  RoleApplicationStatus,
+  useRoleApplicationStatus,
+} from "@/components/role-application/RoleApplicationStatus";
+import type { ApplicableRole } from "@/lib/api/role-applications";
 
 interface ProfileClientProps {
   user: SerializableUserProfile;
@@ -45,13 +51,27 @@ interface ProfileClientProps {
 
 type TabKey = "overview" | "operations" | "security" | "preferences";
 
+function asApplicableRole(role?: string | null): ApplicableRole | null {
+  return role === "farmer" || role === "buyer" ? role : null;
+}
+
 export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const [copiedId, setCopiedId] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
 
   const isFarmer = (user.role || user.wishedRole || "").toLowerCase() === "farmer";
+  const wishedRole = asApplicableRole(user.wishedRole);
+  const needsVerification = Boolean(wishedRole && wishedRole !== user.role);
+  const {
+    application,
+    isLoading: isApplicationLoading,
+    error: applicationError,
+    refresh: refreshApplication,
+    setApplication,
+  } = useRoleApplicationStatus(needsVerification && !isPreview);
 
   const handleCopyId = async () => {
     try {
@@ -440,13 +460,38 @@ export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
                   </Card.Title>
                 </Card.Header>
                 <Card.Content className="px-5 py-3 space-y-3">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted">Identity Status</span>
-                    <span className="font-semibold text-success flex items-center gap-1">
-                      <Check className="size-3.5" /> Verified
-                    </span>
-                  </div>
-                  <Separator />
+                  {needsVerification ? (
+                    <>
+                      <RoleApplicationStatus
+                        application={application}
+                        isLoading={isApplicationLoading}
+                        error={applicationError}
+                        onRefresh={() => void refreshApplication()}
+                      />
+                      {application?.applicationStatus?.toUpperCase() !== "PENDING" && (
+                        <Button
+                          size="sm"
+                          className="w-full bg-accent text-accent-foreground"
+                          onPress={() => setIsRoleDialogOpen(true)}
+                        >
+                          {application?.applicationStatus?.toUpperCase() === "REJECTED"
+                            ? "Update application"
+                            : "Apply for verification"}
+                        </Button>
+                      )}
+                      <Separator />
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted">Identity Status</span>
+                        <span className="font-semibold text-success flex items-center gap-1">
+                          <Check className="size-3.5" /> Verified
+                        </span>
+                      </div>
+                      <Separator />
+                    </>
+                  )}
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted">Email Verified</span>
                     <span className={user.emailVerified ? "text-success font-semibold" : "text-warning font-semibold"}>
@@ -746,6 +791,17 @@ export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
           </div>
         )}
       </div>
+      {wishedRole && (
+        <RoleApplicationDialog
+          isOpen={isRoleDialogOpen}
+          role={wishedRole}
+          onClose={() => setIsRoleDialogOpen(false)}
+          onSubmitted={(nextApplication) => {
+            setApplication(nextApplication);
+            void refreshApplication();
+          }}
+        />
+      )}
     </div>
   );
 }
