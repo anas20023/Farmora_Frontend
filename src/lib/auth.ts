@@ -117,8 +117,15 @@ export const auth = betterAuth({
             },
         }),
         admin(),
-        jwt()
+        jwt(),
     ],
+    session: {
+        cookieCache: {
+            enabled: false,
+            strategy: 'jwt',
+            maxAge: 5 * 24 * 60 * 60,
+        },
+    },
     advanced: {
         database: {
             joins: true,
