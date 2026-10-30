@@ -9,10 +9,10 @@ import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 
 const navigation = [
-  { label: "Specimen Crops", href: "#crops" },
-  { label: "IoT Telemetry", href: "#telemetry" },
-  { label: "Harvest Stages", href: "#how-it-works" },
-  { label: "Verified Farms", href: "#farms" },
+  { label: "Browse Marketplace", href: "/marketplace" },
+  { label: "Harvest Stages", href: "/how-it-works" },
+  { label: "Verified Farms", href: "/farms" },
+  { label: "Contact", href: "/contact" },
 ];
 
 function initials(name?: string | null) {
