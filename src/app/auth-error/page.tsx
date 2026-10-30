@@ -38,7 +38,7 @@ export default async function AuthErrorPage({
   };
 
   return (
-    <main className="grid min-h-[100svh] place-items-center bg-background px-4 text-foreground">
+    <main className="grid min-h-svh place-items-center bg-background px-4 text-foreground">
       <section className="w-full max-w-md rounded bg-surface p-8 text-center text-foreground border border-border">
         <span className="mx-auto grid size-12 place-items-center rounded bg-danger/10 text-danger">
           <AlertTriangle aria-hidden="true" className="size-6" />

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Activity, AlertTriangle, CheckCircle2, ChevronRight, Cpu, Radio, ShieldCheck, Users, XCircle } from "lucide-react";
+import { Users } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function AdminDashboardPage() {

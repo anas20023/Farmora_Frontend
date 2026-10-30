@@ -21,7 +21,7 @@ export default async function DashboardShell({ children }: DashboardShellProps) 
 
   if (!config) return null;
   return (
-    <div data-ui="true" className="flex min-h-[100svh] bg-background text-foreground">
+    <div data-ui="true" className="flex min-h-svh bg-background text-foreground">
       <DashboardSidebar config={config} />
       <div className="min-w-0 flex-1 pt-14 md:pt-0">
         <header className="flex h-16 justify-between items-center border-b border-border bg-surface px-4 sm:px-6">

@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { BarChart3, ChevronLeft, ChevronRight, Heart, LayoutDashboard, Menu, Package, Sprout, Users, Wheat, X } from "lucide-react";
+import { BarChart3, ChevronLeft, ChevronRight, Heart, LayoutDashboard, Menu, Package, Sprout, UserRoundSearch, Users, Wheat, X } from "lucide-react";
 import type { DashboardConfig } from "@/config/dashboard";
 
 type DashboardSidebarProps = { config: DashboardConfig };
@@ -12,6 +12,7 @@ type DashboardSidebarProps = { config: DashboardConfig };
 const navigationIcons = {
   Overview: LayoutDashboard,
   Users,
+  "Verification":UserRoundSearch,
   Analytics: BarChart3,
   Orders: Package,
   "Saved items": Heart,

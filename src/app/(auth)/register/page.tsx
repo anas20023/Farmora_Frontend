@@ -136,7 +136,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-[100svh] flex-col justify-between bg-background text-foreground">
+    <div className="flex min-h-svh flex-col justify-between bg-background text-foreground">
       {/* Top Bar */}
       <header className="flex w-full items-center justify-between px-6 py-4">
         <Link
