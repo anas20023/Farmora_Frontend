@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { AlertTriangle, RefreshCw, Sprout } from "lucide-react";
+import { AlertTriangle, RefreshCw } from "lucide-react";
+import Image from "next/image";
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
@@ -15,10 +16,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
         <span className="mx-auto grid size-14 place-items-center rounded-2xl bg-danger/10 text-danger">
           <AlertTriangle aria-hidden="true" className="size-7" />
         </span>
-        <div className="mt-5 flex items-center justify-center gap-2 text-accent">
-          <Sprout aria-hidden="true" className="size-4" />
-          <span className="text-sm font-semibold">Farmora</span>
-        </div>
+        <Image src="/Logo.png" alt="Farmora" width={35} height={35} />
         <h1 className="mt-3 text-xl font-bold">We couldn’t load this page</h1>
         <p className="mt-2 text-sm leading-6 text-muted">
           Something unexpected happened. Your account and data are safe. Please try again.

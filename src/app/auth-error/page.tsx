@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { AlertTriangle, ArrowLeft, Mail, Sprout } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Mail } from "lucide-react";
+import Image from "next/image";
 
 type AuthErrorDetails = {
   title: string;
@@ -43,8 +44,7 @@ export default async function AuthErrorPage({
           <AlertTriangle aria-hidden="true" className="size-6" />
         </span>
         <div className="mt-4 flex items-center justify-center gap-2 text-accent">
-          <Sprout aria-hidden="true" className="size-4" />
-          <span className="font-display font-bold">Farmora</span>
+         <Image src="/Logo.png" alt="Farmora" width={35} height={35} />    
         </div>
         <h1 className="mt-3 font-display text-2xl font-bold">{details.title}</h1>
         <p className="mt-2 text-sm leading-relaxed text-muted">{details.message}</p>

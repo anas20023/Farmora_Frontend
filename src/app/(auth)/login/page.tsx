@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
-import { ArrowLeft, ArrowRight, Eye, EyeOff, Lock, Mail, Moon, Sprout, Sun, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Eye, EyeOff, Lock, Mail, Moon, Sun, X } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -135,9 +136,7 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
           {/* Logo & Headline */}
           <div className="flex flex-col items-center text-center">
-            <span className="grid size-11 place-items-center rounded bg-accent text-accent-foreground mb-3">
-              <Sprout className="size-6" />
-            </span>
+          <Image src="/Logo.png" alt="Farmora" width={35} height={35} />
 
             <h1 className="font-display text-3xl font-bold tracking-tight text-foreground">
               Sign In to Farmora

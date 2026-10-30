@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { BarChart3, ChevronLeft, ChevronRight, Heart, LayoutDashboard, Menu, Package, Sprout, Users, Wheat, X } from "lucide-react";
@@ -45,12 +46,15 @@ export default function DashboardSidebar({ config }: DashboardSidebarProps) {
         <button type="button" aria-label="Open dashboard navigation" aria-expanded={isOpen} onClick={() => setIsOpen(true)} className="rounded-md p-2 text-foreground hover:bg-surface-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">
           <Menu className="size-5" aria-hidden="true" />
         </button>
-        <span className="ml-3 text-sm font-semibold">Farmora</span>
+        <div className="ml-3 flex items-center gap-2">
+          <Image src="/Logo.png" alt="Farmora" width={30} height={30} />
+          <span className="text-sm font-semibold">Farmora</span>
+        </div>
       </div>
 
       <aside data-ui="true" className={`hidden shrink-0 overflow-hidden border-r border-border bg-surface transition-[width] duration-200 md:flex md:flex-col ${isCollapsed ? "w-16" : "w-64"}`}>
         <div data-ui="true" className={`flex h-16 items-center border-b border-border ${isCollapsed ? "justify-center px-2" : "gap-2 px-5"}`}>
-          <Sprout className="size-5 shrink-0 text-accent" aria-hidden="true" />
+          <Image src="/Logo.png" alt="Farmora" width={35} height={35} className="shrink-0" />
           {!isCollapsed ? <span className="font-semibold text-foreground">Farmora</span> : null}
         </div>
         {navigation(isCollapsed)}
@@ -67,7 +71,7 @@ export default function DashboardSidebar({ config }: DashboardSidebarProps) {
           <aside data-ui="true" className="relative flex h-full w-72 flex-col bg-surface border-r border-border">
             <div data-ui="true" className="flex h-14 items-center justify-between border-b border-border px-4">
               <div className="flex items-center gap-2">
-                <Sprout className="size-5 text-accent" aria-hidden="true" />
+                <Image src="/Logo.png" alt="Farmora" width={35} height={35} />
                 <span className="font-semibold">Farmora</span>
               </div>
               <button type="button" aria-label="Close dashboard navigation" onClick={() => setIsOpen(false)} className="rounded-md p-2 text-foreground hover:bg-surface-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">

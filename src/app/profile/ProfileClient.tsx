@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   Avatar,
@@ -155,7 +156,7 @@ export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
         >
 
           <div className="absolute right-4 bottom-4 hidden sm:flex items-center gap-2 rounded bg-surface px-3 py-1 text-xs font-medium text-foreground border border-border">
-            <Sprout className="size-3.5 text-accent" />
+            <Image src="/Logo.png" alt="Farmora" width={35} height={35} className="size-4 object-contain" />
             <span>Farmora Verified Member</span>
           </div>
         </div>

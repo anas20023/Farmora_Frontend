@@ -13,7 +13,6 @@ import {
     Droplets,
     MapPin,
     ShieldCheck,
-    Sprout,
     X,
 } from 'lucide-react';
 import type { HeroData } from '@/types/hero';

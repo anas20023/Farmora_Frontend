@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Activity, CheckCircle2, ChevronRight, Cpu, Droplet, Radio, Sprout, Sun, Thermometer, Tractor, TrendingUp } from "lucide-react";
+import { Activity, CheckCircle2, ChevronRight, Cpu, Droplet, Radio, Sun, Thermometer, Tractor, TrendingUp } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function FarmerDashboardPage() {

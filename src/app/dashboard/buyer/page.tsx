@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, CheckCircle2, Clock, MapPin, Package, ShieldCheck, Sprout, Truck } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Clock, MapPin, Package, ShieldCheck, Truck } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function BuyerDashboardPage() {

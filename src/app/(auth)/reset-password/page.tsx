@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, type FormEvent, useState } from "react";
-import { KeyRound, Sprout } from "lucide-react";
+import Image from "next/image";
+import { KeyRound } from "lucide-react";
 import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
 
@@ -37,9 +38,9 @@ function ResetPasswordForm() {
     <main className="grid min-h-[100svh] place-items-center bg-background px-4 text-foreground">
       <section className="w-full max-w-md rounded bg-surface p-8 text-foreground border border-border">
         <div className="text-center">
-          <span className="mx-auto grid size-12 place-items-center rounded bg-accent text-accent-foreground mb-3">
-            <Sprout className="size-6" />
-          </span>
+          <div className="flex justify-center mb-3">
+            <Image src="/Logo.png" alt="Farmora" width={35} height={35} />
+          </div>
           <h1 className="font-display text-2xl font-bold">Reset Your Password</h1>
           <p className="text-xs text-muted mt-1">Create a new secure passphrase for your Farmora account</p>
         </div>

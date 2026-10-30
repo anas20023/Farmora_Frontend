@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
-import { ArrowLeft, Check, Eye, EyeOff, Lock, Mail, Moon, ShoppingBag, Sprout, Sun, Tractor, User } from "lucide-react";
+import { ArrowLeft, Check, Eye, EyeOff, Lock, Mail, Moon, ShoppingBag, Sun, Tractor, User } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
+import Image from "next/image";
 
 type UserRole = "farmer" | "buyer";
 
@@ -140,9 +141,7 @@ export default function RegisterPage() {
       <main className="flex flex-1 flex-col items-center justify-center px-4 py-8 sm:px-6">
         <div className="w-full max-w-lg">
           <div className="flex flex-col items-center text-center">
-            <span className="grid size-11 place-items-center rounded bg-accent text-accent-foreground mb-3">
-              <Sprout className="size-6" />
-            </span>
+          <Image src="/Logo.png" alt="Farmora" width={35} height={35} />
 
             <h1 className="font-display text-3xl font-bold tracking-tight text-foreground">
               Register for Farmora
@@ -170,11 +169,10 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setRole("farmer")}
-                    className={`flex items-center gap-3 rounded p-3 text-left transition-colors border ${
-                      role === "farmer"
+                    className={`flex items-center gap-3 rounded p-3 text-left transition-colors border ${role === "farmer"
                         ? "border-accent bg-accent/10 text-foreground"
                         : "border-border bg-background text-muted hover:text-foreground"
-                    }`}
+                      }`}
                   >
                     <Tractor className="size-5 shrink-0 text-accent" />
                     <div>
@@ -186,11 +184,10 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setRole("buyer")}
-                    className={`flex items-center gap-3 rounded p-3 text-left transition-colors border ${
-                      role === "buyer"
+                    className={`flex items-center gap-3 rounded p-3 text-left transition-colors border ${role === "buyer"
                         ? "border-accent bg-accent/10 text-foreground"
                         : "border-border bg-background text-muted hover:text-foreground"
-                    }`}
+                      }`}
                   >
                     <ShoppingBag className="size-5 shrink-0 text-accent" />
                     <div>

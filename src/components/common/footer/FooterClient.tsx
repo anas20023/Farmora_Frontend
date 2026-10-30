@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Sprout } from "lucide-react";
+import Image from "next/image";
 import type { FooterData } from "@/types/footer";
 
 interface FooterClientProps {
@@ -45,10 +45,8 @@ export default function FooterClient({ data }: FooterClientProps) {
         {/* Link Columns & Operations */}
         <div className="mt-14 grid grid-cols-2 gap-8 sm:grid-cols-4 lg:grid-cols-12 lg:gap-8">
           <div className="col-span-2 lg:col-span-4">
-            <div className="flex items-center gap-2">
-              <span className="grid size-7 place-items-center rounded bg-accent text-accent-foreground">
-                <Sprout className="size-4" />
-              </span>
+            <div className="flex items-center gap-2.5">
+              <Image src="/Logo.png" alt="Farmora" width={35} height={35} />
               <span className="font-display text-xl font-bold text-foreground">
                 {brand.primaryName}
               </span>

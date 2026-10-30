@@ -4,8 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Avatar, Button, Menu, Popover } from "@heroui/react";
-import { ChevronDown, LayoutDashboard, LogIn, LogOut, Menu as MenuIcon, Moon, Sprout, Sun, UserRound, X } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogIn, LogOut, Menu as MenuIcon, Moon, Sun, UserRound, X } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import Image from "next/image";
 
 const navigation = [
   { label: "Specimen Crops", href: "#crops" },
@@ -49,9 +50,7 @@ export default function Navbar() {
     <header data-ui="true" className="sticky top-0 z-50 w-full bg-background border-b border-border">
       <nav aria-label="Main navigation" className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2.5 text-foreground transition-opacity hover:opacity-85" onClick={closeMobileMenu}>
-          <span className="grid size-8 place-items-center rounded bg-accent text-accent-foreground">
-            <Sprout aria-hidden="true" className="size-4.5" />
-          </span>
+          <Image src="/Logo.png" alt="Farmora" width={35} height={35} />
           <span className="font-display text-2xl font-bold tracking-tight">Farmora</span>
         </Link>
 
