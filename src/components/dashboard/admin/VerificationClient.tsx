@@ -6,11 +6,9 @@
  * with a table per tab and inline Approve / Reject actions.
  * Calls: GET /admin/role-requests  ·  PATCH /admin/role-requests/:type/:profileId
  * Calls: PATCH /admin/farmers/:profileId/verification   (farmer-only verification status)
- *
- * UI follows the .taste-skill/app/direction.json "Framed sheet / table-filter-bar" blueprint.
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import {
     CheckCircle2,
@@ -42,9 +40,9 @@ const STATUS_LABELS: Record<VerificationStatus, string> = {
 };
 
 const STATUS_CLASSES: Record<VerificationStatus, string> = {
-    PENDING:  'bg-[#fffbeb] text-[#92400e]',
-    APPROVED: 'bg-[#dcfae5] text-[#04250e]',
-    REJECTED: 'bg-[#ffedea] text-[#831c1e]',
+    PENDING:  'bg-warning/15 text-warning border border-warning/20',
+    APPROVED: 'bg-success/15 text-success border border-success/20',
+    REJECTED: 'bg-danger/15 text-danger border border-danger/20',
 };
 
 function fmt(iso: string) {
@@ -92,33 +90,33 @@ function ActionDialog({ request, onClose, onDone }: ActionDialogProps) {
     }
 
     return (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4">
-            <div className="w-full max-w-lg rounded-[8px] bg-white border border-[#e8eaec] p-6">
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/60 p-4 backdrop-blur-xs">
+            <div className="w-full max-w-lg rounded-lg border border-border bg-surface p-6 shadow-xl">
                 <div className="flex items-start justify-between gap-4">
                     <div>
-                        <h2 className="text-[16px] font-semibold text-[#131416]">
+                        <h2 className="text-base font-semibold text-foreground">
                             Review role application
                         </h2>
-                        <p className="mt-0.5 text-[13px] text-[#5d5f60]">
+                        <p className="mt-0.5 text-xs text-muted">
                             {request.user.name} · {request.user.email}
                         </p>
                     </div>
                     <button
                         type="button"
                         onClick={onClose}
-                        className="rounded p-1 text-[#5d5f60] hover:bg-[#ebedee] hover:text-[#131416]"
+                        className="rounded p-1 text-muted hover:bg-surface-secondary hover:text-foreground transition-colors"
                         aria-label="Close"
                     >
                         <X className="size-4" />
                     </button>
                 </div>
 
-                <div className="mt-4 rounded-[6px] bg-[#f4f6f8] p-4 text-[13px] text-[#5d5f60] space-y-1">
-                    <div><span className="font-medium text-[#131416]">Type:</span> <span className="capitalize">{request.type}</span></div>
-                    {request.phone && <div><span className="font-medium text-[#131416]">Phone:</span> {request.phone}</div>}
-                    {request.bio && <div><span className="font-medium text-[#131416]">Bio:</span> {request.bio}</div>}
-                    <div><span className="font-medium text-[#131416]">Submitted:</span> {fmt(request.submittedAt)}</div>
-                    <div><span className="font-medium text-[#131416]">Current status:</span>{' '}
+                <div className="mt-4 rounded-md border border-border/50 bg-surface-secondary p-4 text-xs text-muted space-y-1.5">
+                    <div><span className="font-medium text-foreground">Type:</span> <span className="capitalize">{request.type}</span></div>
+                    {request.phone && <div><span className="font-medium text-foreground">Phone:</span> {request.phone}</div>}
+                    {request.bio && <div><span className="font-medium text-foreground">Bio:</span> {request.bio}</div>}
+                    <div><span className="font-medium text-foreground">Submitted:</span> {fmt(request.submittedAt)}</div>
+                    <div><span className="font-medium text-foreground">Current status:</span>{' '}
                         <span className={`inline-block rounded-full px-2 py-0.5 text-[11px] font-medium ${STATUS_CLASSES[request.status]}`}>
                             {STATUS_LABELS[request.status]}
                         </span>
@@ -129,10 +127,10 @@ function ActionDialog({ request, onClose, onDone }: ActionDialogProps) {
                     <button
                         type="button"
                         onClick={() => setDecision('APPROVED')}
-                        className={`flex-1 flex items-center justify-center gap-1.5 rounded-[6px] border py-2 text-[13px] font-medium transition-colors ${
+                        className={`flex-1 flex items-center justify-center gap-1.5 rounded-md border py-2 text-xs font-medium transition-colors ${
                             decision === 'APPROVED'
-                                ? 'border-[#1e7b4f] bg-[#dcfae5] text-[#04250e]'
-                                : 'border-[#e8eaec] bg-white text-[#5d5f60] hover:bg-[#f4f6f8]'
+                                ? 'border-success bg-success/15 text-success'
+                                : 'border-border bg-surface text-muted hover:bg-surface-secondary hover:text-foreground'
                         }`}
                     >
                         <CheckCircle2 className="size-3.5" />
@@ -141,10 +139,10 @@ function ActionDialog({ request, onClose, onDone }: ActionDialogProps) {
                     <button
                         type="button"
                         onClick={() => setDecision('REJECTED')}
-                        className={`flex-1 flex items-center justify-center gap-1.5 rounded-[6px] border py-2 text-[13px] font-medium transition-colors ${
+                        className={`flex-1 flex items-center justify-center gap-1.5 rounded-md border py-2 text-xs font-medium transition-colors ${
                             decision === 'REJECTED'
-                                ? 'border-[#c4242a] bg-[#ffedea] text-[#831c1e]'
-                                : 'border-[#e8eaec] bg-white text-[#5d5f60] hover:bg-[#f4f6f8]'
+                                ? 'border-danger bg-danger/15 text-danger'
+                                : 'border-border bg-surface text-muted hover:bg-surface-secondary hover:text-foreground'
                         }`}
                     >
                         <XCircle className="size-3.5" />
@@ -154,15 +152,15 @@ function ActionDialog({ request, onClose, onDone }: ActionDialogProps) {
 
                 {decision === 'REJECTED' && (
                     <div className="mt-3">
-                        <label className="block text-[12px] font-medium text-[#131416] mb-1">
-                            Reason <span className="text-[#5d5f60] font-normal">(optional)</span>
+                        <label className="block text-xs font-medium text-foreground mb-1">
+                            Reason <span className="text-muted font-normal">(optional)</span>
                         </label>
                         <textarea
                             value={reason}
                             onChange={(e) => setReason(e.target.value)}
                             rows={3}
                             placeholder="Briefly explain the rejection reason…"
-                            className="w-full rounded-[6px] border border-[#e8eaec] bg-white px-3 py-2 text-[13px] text-[#131416] outline-none focus:border-[#1b6c80] focus:ring-2 focus:ring-[#1b6c80]/20 resize-none"
+                            className="w-full rounded-md border border-border bg-surface px-3 py-2 text-xs text-foreground placeholder:text-muted/60 outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 resize-none"
                         />
                     </div>
                 )}
@@ -172,7 +170,7 @@ function ActionDialog({ request, onClose, onDone }: ActionDialogProps) {
                         type="button"
                         onClick={onClose}
                         disabled={loading}
-                        className="rounded-[6px] border border-[#e8eaec] px-4 py-2 text-[13px] font-medium text-[#5d5f60] hover:bg-[#f4f6f8] disabled:opacity-50"
+                        className="rounded-md border border-border px-4 py-2 text-xs font-medium text-muted hover:bg-surface-secondary hover:text-foreground disabled:opacity-50 transition-colors"
                     >
                         Cancel
                     </button>
@@ -180,7 +178,7 @@ function ActionDialog({ request, onClose, onDone }: ActionDialogProps) {
                         type="button"
                         onClick={submit}
                         disabled={!decision || loading}
-                        className="inline-flex items-center gap-1.5 rounded-[6px] bg-[#1b6c80] px-4 py-2 text-[13px] font-medium text-white hover:opacity-90 disabled:opacity-40"
+                        className="inline-flex items-center gap-1.5 rounded-md bg-accent px-4 py-2 text-xs font-medium text-accent-foreground hover:bg-accent-hover disabled:opacity-40 transition-colors"
                     >
                         {loading ? <RefreshCw className="size-3.5 animate-spin" /> : <ShieldCheck className="size-3.5" />}
                         Confirm
@@ -211,61 +209,73 @@ function RequestTable({ type, statusFilter, search, refreshKey, onRefresh }: Req
     const PAGE_SIZE = 10;
     const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
-    const load = useCallback(async () => {
-        setLoading(true);
-        try {
-            const data = await adminGetRoleRequests({
-                type,
-                status: statusFilter,
-                page,
-                limit: PAGE_SIZE,
-            });
+    useEffect(() => {
+        let isMounted = true;
+        const fetchRequests = async () => {
+            setLoading(true);
+            try {
+                const data = await adminGetRoleRequests({
+                    type,
+                    status: statusFilter,
+                    page,
+                    limit: PAGE_SIZE,
+                });
+                if (!isMounted) return;
 
-            // Safely retrieve requests array from response
-            const requestList: RoleRequest[] = Array.isArray(data.requests)
-                ? data.requests
-                : Array.isArray((data as any).data)
-                  ? (data as any).data
-                  : [];
+                const rawData = data as unknown as Record<string, unknown>;
+                const requestList: RoleRequest[] = Array.isArray(data.requests)
+                    ? data.requests
+                    : Array.isArray(rawData.data)
+                      ? (rawData.data as RoleRequest[])
+                      : [];
 
-            const totalCount =
-                data.total ??
-                (data as any).pagination?.total ??
-                requestList.length;
+                const pagination = rawData.pagination as Record<string, unknown> | undefined;
+                const totalCount =
+                    data.total ??
+                    (typeof pagination?.total === 'number' ? pagination.total : requestList.length);
 
-            // client-side search filter (backend may or may not support it)
-            const q = search.toLowerCase().trim();
-            setRows(
-                q
-                    ? requestList.filter(
-                          (r) =>
-                              r.user?.name?.toLowerCase().includes(q) ||
-                              r.user?.email?.toLowerCase().includes(q) ||
-                              r.phone?.toLowerCase().includes(q),
-                      )
-                    : requestList,
-            );
-            setTotal(totalCount);
-        } catch (err: unknown) {
-            toast.error(
-                err instanceof Error ? err.message : 'Failed to load role requests.',
-            );
-        } finally {
-            setLoading(false);
-        }
-    }, [type, statusFilter, page, search, refreshKey]); // eslint-disable-line react-hooks/exhaustive-deps
+                // client-side search filter
+                const q = search.toLowerCase().trim();
+                setRows(
+                    q
+                        ? requestList.filter(
+                              (r) =>
+                                  r.user?.name?.toLowerCase().includes(q) ||
+                                  r.user?.email?.toLowerCase().includes(q) ||
+                                  r.phone?.toLowerCase().includes(q),
+                          )
+                        : requestList,
+                );
+                setTotal(totalCount);
+            } catch (err: unknown) {
+                if (isMounted) {
+                    toast.error(
+                        err instanceof Error ? err.message : 'Failed to load role requests.',
+                    );
+                }
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        };
 
-    useEffect(() => { load(); }, [load]);
+        void fetchRequests();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [type, statusFilter, page, search, refreshKey]);
 
     return (
         <div
             data-ui="true"
-            className={`overflow-hidden rounded-[8px] border border-[#e8eaec] bg-white transition-opacity ${loading ? 'opacity-60' : ''}`}
+            className={`overflow-hidden rounded-lg border border-border bg-surface transition-opacity ${loading ? 'opacity-60' : ''}`}
             aria-busy={loading}
         >
             <div className="overflow-x-auto">
-                <table className="w-full min-w-[640px] text-left text-[13px]">
-                    <thead data-ui="true" className="border-b border-[#e8eaec] bg-[#f4f6f8] text-[12px] font-medium text-[#5d5f60]">
+                <table className="w-full min-w-[640px] text-left text-xs sm:text-[13px]">
+                    <thead data-ui="true" className="border-b border-border bg-surface-secondary text-xs font-medium text-muted">
                         <tr>
                             <th className="px-5 py-3 font-medium">Applicant</th>
                             <th className="px-5 py-3 font-medium">Profile details</th>
@@ -274,32 +284,32 @@ function RequestTable({ type, statusFilter, search, refreshKey, onRefresh }: Req
                             <th className="px-5 py-3 font-medium">Actions</th>
                         </tr>
                     </thead>
-                    <tbody data-ui="true" className="divide-y divide-[#f0f1f2]">
+                    <tbody data-ui="true" className="divide-y divide-border">
                         {rows.map((req) => {
                             const p = req.profile as unknown as Record<string, unknown>;
                             return (
-                                <tr key={req.profileId} className="hover:bg-[#f9fbfc]">
+                                <tr key={req.profileId} className="hover:bg-surface-secondary/50 transition-colors">
                                     <td className="px-5 py-3">
-                                        <p className="font-medium text-[#131416]">{req.user.name}</p>
-                                        <p className="mt-0.5 text-[#5d5f60]">{req.user.email}</p>
+                                        <p className="font-medium text-foreground">{req.user.name}</p>
+                                        <p className="mt-0.5 text-muted">{req.user.email}</p>
                                     </td>
-                                    <td className="px-5 py-3 text-[#5d5f60]">
+                                    <td className="px-5 py-3 text-muted">
                                         {req.phone ? (
-                                            <p className="font-medium text-[#131416]">{req.phone}</p>
+                                            <p className="font-medium text-foreground">{req.phone}</p>
                                         ) : p?.phone ? (
-                                            <p className="font-medium text-[#131416]">{String(p.phone)}</p>
+                                            <p className="font-medium text-foreground">{String(p.phone)}</p>
                                         ) : null}
                                         {req.bio ? (
-                                            <p className="mt-0.5 text-[12px] line-clamp-1">{req.bio}</p>
+                                            <p className="mt-0.5 text-xs line-clamp-1">{req.bio}</p>
                                         ) : p?.bio ? (
-                                            <p className="mt-0.5 text-[12px] line-clamp-1">{String(p.bio)}</p>
+                                            <p className="mt-0.5 text-xs line-clamp-1">{String(p.bio)}</p>
                                         ) : p?.farmName || p?.companyName ? (
-                                            <p className="mt-0.5 text-[12px]">{String(p.farmName ?? p.companyName)}</p>
+                                            <p className="mt-0.5 text-xs text-foreground/80">{String(p.farmName ?? p.companyName)}</p>
                                         ) : !req.phone && !p?.phone ? (
-                                            <p className="text-[12px] italic text-[#8a8c8e]">—</p>
+                                            <p className="text-xs italic text-muted/60">—</p>
                                         ) : null}
                                     </td>
-                                    <td className="px-5 py-3 text-[#5d5f60]">
+                                    <td className="px-5 py-3 text-muted">
                                         {fmt(req.submittedAt)}
                                     </td>
                                     <td className="px-5 py-3">
@@ -311,7 +321,7 @@ function RequestTable({ type, statusFilter, search, refreshKey, onRefresh }: Req
                                         <button
                                             type="button"
                                             onClick={() => setSelected(req)}
-                                            className="inline-flex items-center gap-1 rounded-[6px] border border-[#e8eaec] px-3 py-1.5 text-[12px] font-medium text-[#5d5f60] hover:bg-[#f4f6f8] hover:text-[#131416]"
+                                            className="inline-flex items-center gap-1 rounded-md border border-border bg-surface px-3 py-1.5 text-xs font-medium text-muted hover:bg-surface-secondary hover:text-foreground transition-colors"
                                         >
                                             <ShieldCheck className="size-3.5" />
                                             Review
@@ -323,7 +333,7 @@ function RequestTable({ type, statusFilter, search, refreshKey, onRefresh }: Req
 
                         {!loading && rows.length === 0 && (
                             <tr>
-                                <td colSpan={5} className="px-5 py-12 text-center text-[#5d5f60]">
+                                <td colSpan={5} className="px-5 py-12 text-center text-muted">
                                     No {type} applications match the current filters.
                                 </td>
                             </tr>
@@ -333,14 +343,14 @@ function RequestTable({ type, statusFilter, search, refreshKey, onRefresh }: Req
             </div>
 
             {/* Pagination */}
-            <div data-ui="true" className="flex items-center justify-between border-t border-[#e8eaec] px-4 py-3 text-[12px] text-[#5d5f60]">
+            <div data-ui="true" className="flex items-center justify-between border-t border-border px-4 py-3 text-xs text-muted">
                 <p>Page {page} of {totalPages} · {total} total</p>
                 <div className="flex gap-2">
                     <button
                         type="button"
                         disabled={page <= 1 || loading}
                         onClick={() => setPage((p) => p - 1)}
-                        className="inline-flex items-center gap-1 rounded-[6px] border border-[#e8eaec] px-3 py-1.5 disabled:opacity-40"
+                        className="inline-flex items-center gap-1 rounded-md border border-border bg-surface px-3 py-1.5 text-foreground hover:bg-surface-secondary disabled:opacity-40 transition-colors"
                     >
                         <ChevronLeft className="size-3.5" />
                         Previous
@@ -349,7 +359,7 @@ function RequestTable({ type, statusFilter, search, refreshKey, onRefresh }: Req
                         type="button"
                         disabled={page >= totalPages || loading}
                         onClick={() => setPage((p) => p + 1)}
-                        className="inline-flex items-center gap-1 rounded-[6px] border border-[#e8eaec] px-3 py-1.5 disabled:opacity-40"
+                        className="inline-flex items-center gap-1 rounded-md border border-border bg-surface px-3 py-1.5 text-foreground hover:bg-surface-secondary disabled:opacity-40 transition-colors"
                     >
                         Next
                         <ChevronRight className="size-3.5" />
@@ -399,17 +409,17 @@ export default function VerificationClient() {
             {/* Title row */}
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                 <div>
-                    <h1 className="text-[22px] font-semibold text-[#131416]">
+                    <h1 className="text-2xl font-semibold tracking-tight text-foreground">
                         Verification queue
                     </h1>
-                    <p className="mt-1 text-[13px] text-[#5d5f60]">
+                    <p className="mt-1 text-sm text-muted">
                         Review and approve farmer and buyer role applications.
                     </p>
                 </div>
                 <button
                     type="button"
                     onClick={refresh}
-                    className="inline-flex items-center gap-1.5 rounded-[6px] border border-[#e8eaec] px-4 py-2 text-[13px] font-medium text-[#5d5f60] hover:bg-[#f4f6f8]"
+                    className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-4 py-2 text-sm font-medium text-muted hover:bg-surface-secondary hover:text-foreground transition-colors"
                 >
                     <RefreshCw className="size-3.5" />
                     Refresh
@@ -419,16 +429,16 @@ export default function VerificationClient() {
             {/* Tab strip + toolbar */}
             <div>
                 {/* Tabs */}
-                <div className="flex border-b border-[#e8eaec]">
+                <div className="flex border-b border-border">
                     {TABS.map(({ id, label }) => (
                         <button
                             key={id}
                             type="button"
                             onClick={() => setTab(id)}
-                            className={`px-5 py-2.5 text-[13px] font-medium transition-colors relative ${
+                            className={`px-5 py-2.5 text-sm font-medium transition-colors relative ${
                                 tab === id
-                                    ? 'text-[#131416] after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-[#1b6c80]'
-                                    : 'text-[#5d5f60] hover:text-[#131416]'
+                                    ? 'text-foreground after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-accent'
+                                    : 'text-muted hover:text-foreground'
                             }`}
                         >
                             {label}
@@ -443,13 +453,13 @@ export default function VerificationClient() {
                         className="relative flex-1 max-w-xs"
                         onSubmit={(e) => { e.preventDefault(); setSearch(searchInput); setRefreshKey((k) => k + 1); }}
                     >
-                        <Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-[#5d5f60]" />
+                        <Search className="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-muted" />
                         <input
                             type="search"
                             value={searchInput}
                             onChange={(e) => setSearchInput(e.target.value)}
                             placeholder="Search name or email…"
-                            className="h-[32px] w-full rounded-[6px] border border-[#e8eaec] bg-white pl-8 pr-3 text-[13px] text-[#131416] outline-none focus:border-[#1b6c80] focus:ring-2 focus:ring-[#1b6c80]/20"
+                            className="h-9 w-full rounded-md border border-border bg-surface pl-8 pr-3 text-sm text-foreground placeholder:text-muted/60 outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
                         />
                     </form>
 
@@ -457,15 +467,15 @@ export default function VerificationClient() {
                     <select
                         value={statusFilter}
                         onChange={(e) => { setStatusFilter(e.target.value as StatusFilter); setRefreshKey((k) => k + 1); }}
-                        className="h-[32px] rounded-[6px] border border-[#e8eaec] bg-white px-3 text-[13px] text-[#131416] outline-none focus:border-[#1b6c80] focus:ring-2 focus:ring-[#1b6c80]/20"
+                        className="h-9 rounded-md border border-border bg-surface px-3 text-sm text-foreground outline-none focus:border-accent focus:ring-2 focus:ring-accent/20"
                     >
                         {STATUS_OPTIONS.map(({ value, label }) => (
-                            <option key={value} value={value}>{label}</option>
+                            <option key={value} value={value} className="bg-surface text-foreground">{label}</option>
                         ))}
                     </select>
 
                     {/* Status legend */}
-                    <div className="ml-auto hidden sm:flex items-center gap-3 text-[12px]">
+                    <div className="ml-auto hidden sm:flex items-center gap-3 text-xs">
                         {(['PENDING','APPROVED','REJECTED'] as VerificationStatus[]).map((s) => (
                             <span key={s} className={`inline-block rounded-full px-2.5 py-0.5 font-medium ${STATUS_CLASSES[s]}`}>
                                 {STATUS_LABELS[s]}
@@ -485,9 +495,9 @@ export default function VerificationClient() {
             />
 
             {/* Quick stats strip */}
-            <div className="flex items-center gap-6 text-[12px] text-[#5d5f60]">
+            <div className="flex items-center gap-6 text-xs text-muted">
                 <span className="flex items-center gap-1"><Clock className="size-3.5" />Pending items require admin review</span>
-                <span className="flex items-center gap-1"><CheckCircle2 className="size-3.5 text-[#1e7b4f]" />Approval triggers automatic role upgrade</span>
+                <span className="flex items-center gap-1"><CheckCircle2 className="size-3.5 text-success" />Approval triggers automatic role upgrade</span>
             </div>
         </div>
     );
