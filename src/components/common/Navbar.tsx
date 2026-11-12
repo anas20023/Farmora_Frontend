@@ -12,6 +12,7 @@ import {
     LogOut,
     Menu as MenuIcon,
     Moon,
+    ShieldCheck,
     Sun,
     UserRound,
     X,
@@ -77,24 +78,29 @@ export default function Navbar() {
 
     const closeMobileMenu = () => setIsMobileMenuOpen(false);
     const user = session?.user;
-    const wishedRole = asApplicableRole(user?.wished_role);
     const currentRole = String(user?.role ?? 'user');
-    const needsVerification = Boolean(user && wishedRole && wishedRole !== currentRole);
+    const isUserRole = Boolean(user && currentRole === 'user');
+    const wishedRole = asApplicableRole(user?.wished_role);
     const {
         application,
         refresh: refreshApplication,
         setApplication,
-    } = useRoleApplicationStatus(needsVerification);
+    } = useRoleApplicationStatus(isUserRole);
     const applicationStatus = application?.applicationStatus?.toUpperCase();
-    const verificationLabel =
-        applicationStatus === 'PENDING'
-            ? 'Verification pending'
-            : applicationStatus === 'REJECTED'
-              ? 'Update verification'
-              : `Become a Verified ${wishedRole ? wishedRole.charAt(0).toUpperCase() + wishedRole.slice(1) : 'Member'}`;
+    const effectiveRole = wishedRole || asApplicableRole(application?.wishedRole);
+    const isPending = applicationStatus === 'PENDING';
+    const isRejected = applicationStatus === 'REJECTED';
+
+    const verificationLabel = isPending
+        ? 'Verification pending'
+        : isRejected
+          ? 'Update verification'
+          : effectiveRole
+            ? `Become a Verified ${effectiveRole.charAt(0).toUpperCase() + effectiveRole.slice(1)}`
+            : 'Apply for Role';
 
     const openRoleApplication = () => {
-        if (applicationStatus === 'PENDING') {
+        if (isPending) {
             router.push('/profile');
             return;
         }
@@ -132,7 +138,7 @@ export default function Navbar() {
                             {item.label}
                         </Link>
                     ))}
-                    {needsVerification && (
+                    {isUserRole && (
                         <button
                             type="button"
                             onClick={openRoleApplication}
@@ -204,6 +210,15 @@ export default function Navbar() {
                                             <UserRound className="size-4" />
                                             Profile
                                         </Menu.Item>
+                                        {isUserRole && (
+                                            <Menu.Item
+                                                id="apply-role"
+                                                textValue="Apply for Role"
+                                                onAction={openRoleApplication}>
+                                                <ShieldCheck className="size-4 text-accent" />
+                                                {verificationLabel}
+                                            </Menu.Item>
+                                        )}
                                         {session.user.role !== 'user' && (
                                             <Menu.Item
                                                 id="dashboard"
@@ -265,17 +280,25 @@ export default function Navbar() {
                             </Link>
                         ))}
 
-                        {needsVerification && (
+                        {isUserRole && (
                             <button
                                 type="button"
                                 onClick={() => {
                                     closeMobileMenu();
                                     openRoleApplication();
                                 }}
-                                className="inline-flex items-center gap-2 rounded text-sm font-semibold text-accent-background transition-opacity hover:opacity-90 cursor-pointer">
+                                className="inline-flex w-full items-center justify-between rounded bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 cursor-pointer">
                                 <span>{verificationLabel}</span>
-                                <ArrowUpRight />
+                                <ArrowUpRight className="size-4" />
                             </button>
+                        )}
+                        {user && (
+                            <Link
+                                href="/profile"
+                                className="text-base font-medium text-foreground hover:text-accent"
+                                onClick={closeMobileMenu}>
+                                Profile
+                            </Link>
                         )}
                         {!user && (
                             <Button
@@ -291,10 +314,11 @@ export default function Navbar() {
                     </div>
                 </div>
             )}
-            {wishedRole && (
+            {isUserRole && (
                 <RoleApplicationDialog
                     isOpen={isRoleDialogOpen}
-                    role={wishedRole}
+                    role={effectiveRole}
+                    canSelectRole={!wishedRole}
                     onClose={() => setIsRoleDialogOpen(false)}
                     onSubmitted={(nextApplication) => {
                         setApplication(nextApplication);

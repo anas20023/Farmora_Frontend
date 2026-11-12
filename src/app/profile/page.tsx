@@ -95,7 +95,7 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
       emailVerified: Boolean(rawUser.emailVerified),
       image: rawUser.image ? String(rawUser.image) : null,
       role: String(rawUser.role || rawUser.wished_role || "user"),
-      wishedRole: String(rawUser.wished_role || rawUser.role || "farmer"),
+      wishedRole: String(rawUser.wished_role || rawUser.role || "user"),
       username: rawUser.username ? String(rawUser.username) : null,
       createdAt: toISOString(rawUser.createdAt),
       updatedAt: toISOString(rawUser.updatedAt),
