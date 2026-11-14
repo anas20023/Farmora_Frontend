@@ -16,14 +16,12 @@ export default function PreOrderModal({
   isOpen,
   onClose,
 }: PreOrderModalProps) {
-  const [quantity, setQuantity] = useState(50);
+  const [quantity, setQuantity] = useState(crop?.unit === "/piece" ? 25 : 50);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
-      setIsConfirmed(false);
-      setQuantity(crop?.unit === "/piece" ? 25 : 50);
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
@@ -31,7 +29,7 @@ export default function PreOrderModal({
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isOpen, crop]);
+  }, [isOpen]);
 
   if (!isOpen || !crop) return null;
 
