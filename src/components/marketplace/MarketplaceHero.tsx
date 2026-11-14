@@ -16,7 +16,7 @@ export default function MarketplaceHero({ stats }: MarketplaceHeroProps) {
   return (
     <section className="relative border-b border-border bg-surface/50 backdrop-blur-sm">
       {/* Subtle top indicator bar */}
-      <div className="border-b border-border/60 bg-surface-secondary/60 px-4 py-2 text-xs text-muted">
+      {/* <div className="border-b border-border/60 bg-surface-secondary/60 px-4 py-2 text-xs text-muted">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="relative flex size-2">
@@ -38,7 +38,7 @@ export default function MarketplaceHero({ stats }: MarketplaceHeroProps) {
             </span>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
