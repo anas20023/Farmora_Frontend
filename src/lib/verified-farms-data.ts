@@ -13,7 +13,7 @@ export async function getVerifiedFarmsData(): Promise<FeaturedFarmsSectionData> 
       "Every farm is physically inspected, soil-tested, and equipped with telemetry nodes for full transparency.",
     viewAllLink: {
       label: "View All 1,240+ Verified Farms",
-      href: "#verified-farms",
+      href: "/farms",
     },
     farms: [
       {
