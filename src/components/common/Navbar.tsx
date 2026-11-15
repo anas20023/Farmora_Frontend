@@ -8,9 +8,9 @@ import { ChevronDown, LayoutDashboard, LogIn, LogOut, Menu as MenuIcon, Moon, Sp
 import { authClient } from "@/lib/auth-client";
 
 const navigation = [
-  { label: "Market Place", href: "#marketplace" },
-  { label: "How it works", href: "#how-it-works" },
-  { label: "Contact", href: "#contact" },
+  { label: "Market Place", href: "/#marketplace" },
+  { label: "How it works", href: "/#how-it-works" },
+  { label: "Contact", href: "/contact" },
 ];
 
 function initials(name?: string | null) {
