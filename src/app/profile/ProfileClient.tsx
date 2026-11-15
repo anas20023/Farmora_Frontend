@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   Avatar,
@@ -36,6 +37,12 @@ import {
 import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
 import type { SerializableUserProfile } from "@/types/profile";
+import RoleApplicationDialog from "@/components/role-application/RoleApplicationDialog";
+import {
+  RoleApplicationStatus,
+  useRoleApplicationStatus,
+} from "@/components/role-application/RoleApplicationStatus";
+import type { ApplicableRole } from "@/lib/api/role-applications";
 
 interface ProfileClientProps {
   user: SerializableUserProfile;
@@ -44,13 +51,41 @@ interface ProfileClientProps {
 
 type TabKey = "overview" | "operations" | "security" | "preferences";
 
+function asApplicableRole(role?: string | null): ApplicableRole | null {
+  return role === "farmer" || role === "buyer" ? role : null;
+}
+
 export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const [copiedId, setCopiedId] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
 
-  const isFarmer = (user.role || user.wishedRole || "").toLowerCase() === "farmer";
+  const isUserRole = (user.role || "").toLowerCase() === "user";
+  const isFarmer = (user.role || "").toLowerCase() === "farmer";
+  const isBuyer = (user.role || "").toLowerCase() === "buyer";
+  const wishedRole = asApplicableRole(user.wishedRole);
+  const isWishedRoleUser = (user.wishedRole || "").toLowerCase() === "user" || !wishedRole;
+  const [dialogRole, setDialogRole] = useState<ApplicableRole | null>(wishedRole);
+
+  const {
+    application,
+    isLoading: isApplicationLoading,
+    error: applicationError,
+    refresh: refreshApplication,
+    setApplication,
+  } = useRoleApplicationStatus(isUserRole && !isPreview);
+
+  const effectiveRole = wishedRole || asApplicableRole(application?.wishedRole);
+  const appStatus = application?.applicationStatus?.toUpperCase();
+  const isPending = appStatus === "PENDING";
+  const isRejected = appStatus === "REJECTED";
+
+  const openApplyModal = (targetRole?: ApplicableRole) => {
+    setDialogRole(targetRole || effectiveRole || null);
+    setIsRoleDialogOpen(true);
+  };
 
   const handleCopyId = async () => {
     try {
@@ -120,7 +155,7 @@ export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
   ];
 
   return (
-    <div className="w-full space-y-6">
+    <div data-ui="true" className="w-full space-y-6">
       {/* Dev / Preview Mode Banner */}
       {isPreview && (
         <aside
@@ -147,15 +182,15 @@ export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
       )}
 
       {/* Main Profile Header Card */}
-      <Card variant="default" className="relative overflow-hidden border border-border bg-surface shadow-sm">
+      <Card variant="default" className="relative overflow-hidden border border-border bg-surface">
         {/* Decorative Top Accent Banner */}
         <div
           aria-hidden="true"
-          className="h-32 sm:h-40 w-full bg-gradient-to-r from-accent/90 via-accent/70 to-surface-secondary relative"
+          className="h-28 sm:h-32 w-full bg-surface-secondary relative"
         >
-          <div className="absolute inset-0 bg-[radial-gradient(#ffffff20_1px,transparent_1px)] [background-size:16px_16px] opacity-40" />
-          <div className="absolute right-4 bottom-4 hidden sm:flex items-center gap-2 rounded-full bg-background/80 px-3 py-1 text-xs font-medium text-foreground backdrop-blur border border-border">
-            <Sprout className="size-3.5 text-accent" />
+
+          <div className="absolute right-4 bottom-4 hidden sm:flex items-center gap-2 rounded bg-surface px-3 py-1 text-xs font-medium text-foreground border border-border">
+            <Image src="/Logo.png" alt="Farmora" width={35} height={35} className="size-4 object-contain" />
             <span>Farmora Verified Member</span>
           </div>
         </div>
@@ -165,7 +200,7 @@ export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
             {/* User Avatar + Presence */}
             <div className="flex items-end gap-4">
               <div className="relative">
-                <Avatar size="lg" className="size-24 sm:size-28 ring-4 ring-background border border-border shadow-md">
+                <Avatar size="lg" className="size-24 sm:size-28 ring-4 ring-background border border-border">
                   {user.image ? (
                     <Avatar.Image src={user.image} alt={user.name} />
                   ) : null}
@@ -252,11 +287,17 @@ export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
             <div className="rounded-md border border-border/60 bg-surface-secondary/50 p-3">
               <div className="flex items-center gap-2 text-xs text-muted mb-1">
-                {isFarmer ? <Tractor className="size-3.5 text-accent" /> : <ShoppingBag className="size-3.5 text-accent" />}
+                {isFarmer ? (
+                  <Tractor className="size-3.5 text-accent" />
+                ) : isBuyer ? (
+                  <ShoppingBag className="size-3.5 text-accent" />
+                ) : (
+                  <User className="size-3.5 text-accent" />
+                )}
                 <span>Role</span>
               </div>
               <div className="font-semibold text-foreground capitalize">
-                {user.role || user.wishedRole || "Member"}
+                {user.role || "User"}
               </div>
             </div>
 
@@ -295,7 +336,7 @@ export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
       </Card>
 
       {/* Tabs Navigation */}
-      <div className="border-b border-border">
+      <div data-ui="true" className="border-b border-border">
         <nav
           aria-label="Profile Sections"
           className="flex space-x-2 overflow-x-auto pb-px scrollbar-none"
@@ -439,13 +480,86 @@ export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
                   </Card.Title>
                 </Card.Header>
                 <Card.Content className="px-5 py-3 space-y-3">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted">Identity Status</span>
-                    <span className="font-semibold text-success flex items-center gap-1">
-                      <Check className="size-3.5" /> Verified
-                    </span>
-                  </div>
-                  <Separator />
+                  {isUserRole ? (
+                    <>
+                      {(isPending || isRejected || application?.wishedRole) ? (
+                        <>
+                          <RoleApplicationStatus
+                            application={application}
+                            isLoading={isApplicationLoading}
+                            error={applicationError}
+                            onRefresh={() => void refreshApplication()}
+                          />
+                          {!isPending && (
+                            <Button
+                              size="sm"
+                              className="w-full bg-accent text-accent-foreground font-semibold"
+                              onPress={() => openApplyModal(effectiveRole || undefined)}
+                            >
+                              {isRejected ? "Update application" : "Re-apply for verification"}
+                            </Button>
+                          )}
+                        </>
+                      ) : isWishedRoleUser ? (
+                        <div className="rounded-md border border-border bg-surface p-3.5 space-y-2.5">
+                          <div className="flex items-center gap-2 text-foreground font-semibold text-sm">
+                            <Sparkles className="size-4 text-accent" />
+                            <span>Apply for Role</span>
+                          </div>
+                          <p className="text-xs text-muted leading-relaxed">
+                            You are currently registered as a standard user. Apply for a Farmer or Buyer role to begin trading or purchasing on Farmora.
+                          </p>
+                          <div className="grid grid-cols-2 gap-2 pt-1">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="w-full text-xs font-semibold border-accent/40 text-accent hover:bg-accent/10"
+                              onPress={() => openApplyModal("farmer")}
+                            >
+                              <Tractor className="size-3.5 mr-1" />
+                              Apply as Farmer
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="w-full text-xs font-semibold border-accent/40 text-accent hover:bg-accent/10"
+                              onPress={() => openApplyModal("buyer")}
+                            >
+                              <ShoppingBag className="size-3.5 mr-1" />
+                              Apply as Buyer
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <RoleApplicationStatus
+                            application={application}
+                            isLoading={isApplicationLoading}
+                            error={applicationError}
+                            onRefresh={() => void refreshApplication()}
+                          />
+                          <Button
+                            size="sm"
+                            className="w-full bg-accent text-accent-foreground font-semibold"
+                            onPress={() => openApplyModal(wishedRole || undefined)}
+                          >
+                            Apply as Verified {wishedRole ? wishedRole.charAt(0).toUpperCase() + wishedRole.slice(1) : "Member"}
+                          </Button>
+                        </>
+                      )}
+                      <Separator />
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted">Role Verification</span>
+                        <span className="font-semibold text-success flex items-center gap-1 capitalize">
+                          <Check className="size-3.5" /> Verified {user.role}
+                        </span>
+                      </div>
+                      <Separator />
+                    </>
+                  )}
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted">Email Verified</span>
                     <span className={user.emailVerified ? "text-success font-semibold" : "text-warning font-semibold"}>
@@ -497,6 +611,40 @@ export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
         {/* 2. OPERATIONS TAB */}
         {activeTab === "operations" && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {isUserRole && isWishedRoleUser && (
+              <div className="md:col-span-2 rounded-lg border border-accent/30 bg-accent/5 p-5">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div>
+                    <div className="flex items-center gap-2 text-foreground font-semibold">
+                      <Sparkles className="size-4 text-accent" />
+                      <span>Unlock Operations Dashboard</span>
+                    </div>
+                    <p className="text-xs text-muted mt-1 max-w-xl">
+                      Standard user accounts do not have active farming or bulk procurement logs. Apply for a Farmer or Buyer role to begin managing crops, sensor telemetry, or wholesale orders.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      className="bg-accent text-accent-foreground font-semibold"
+                      onPress={() => openApplyModal("farmer")}
+                    >
+                      <Tractor className="size-3.5 mr-1" />
+                      Apply as Farmer
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-accent/50 text-accent font-semibold hover:bg-accent/10"
+                      onPress={() => openApplyModal("buyer")}
+                    >
+                      <ShoppingBag className="size-3.5 mr-1" />
+                      Apply as Buyer
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
             <Card variant="default" className="border border-border bg-surface">
               <Card.Header className="px-6 pt-6 pb-2">
                 <Card.Title className="text-lg font-semibold text-foreground flex items-center gap-2">
@@ -637,14 +785,14 @@ export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-muted">Session Status</span>
                     <span className="font-semibold text-emerald-500 flex items-center gap-1">
-                      <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="size-1.5 rounded-full bg-emerald-500" />
                       Active
                     </span>
                   </div>
                   {user.sessionInfo?.id && (
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-muted">Session Reference</span>
-                      <span className="font-mono text-foreground">
+                      <span className="text-foreground">
                         {user.sessionInfo.id.slice(0, 12)}...
                       </span>
                     </div>
@@ -745,6 +893,18 @@ export default function ProfileClient({ user, isPreview }: ProfileClientProps) {
           </div>
         )}
       </div>
+      {isUserRole && (
+        <RoleApplicationDialog
+          isOpen={isRoleDialogOpen}
+          role={dialogRole || effectiveRole}
+          canSelectRole={isWishedRoleUser}
+          onClose={() => setIsRoleDialogOpen(false)}
+          onSubmitted={(nextApplication) => {
+            setApplication(nextApplication);
+            void refreshApplication();
+          }}
+        />
+      )}
     </div>
   );
 }

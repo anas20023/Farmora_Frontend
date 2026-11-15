@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth";
 import Navbar from "@/components/common/Navbar";
 import ProfileClient from "./ProfileClient";
 import type { SerializableUserProfile } from "@/types/profile";
-import { Sprout } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -95,7 +95,7 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
       emailVerified: Boolean(rawUser.emailVerified),
       image: rawUser.image ? String(rawUser.image) : null,
       role: String(rawUser.role || rawUser.wished_role || "user"),
-      wishedRole: String(rawUser.wished_role || rawUser.role || "farmer"),
+      wishedRole: String(rawUser.wished_role || rawUser.role || "user"),
       username: rawUser.username ? String(rawUser.username) : null,
       createdAt: toISOString(rawUser.createdAt),
       updatedAt: toISOString(rawUser.updatedAt),
@@ -135,7 +135,7 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
+    <div className="flex min-h-[100svh] flex-col bg-background text-foreground">
       {/* Primary Navigation Bar */}
       <Navbar />
 
@@ -145,12 +145,12 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
       </main>
 
       {/* Production Footer conforming to design tokens */}
-      <footer className="mt-auto border-t border-border bg-surface-secondary/40 py-6 text-sm text-muted">
+      <footer className="mt-auto bg-surface-secondary/40 py-6 text-sm text-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-foreground font-semibold">
-            <span className="grid size-6 place-items-center rounded bg-accent text-accent-foreground">
-              <Sprout className="size-3.5" />
-            </span>
+            <Image src="/Logo.png" alt="Farmora" width={35} height={35} />
+
+
             <span>Farmora Marketplace</span>
           </div>
           <p className="text-xs text-muted">

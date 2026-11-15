@@ -1,55 +1,68 @@
 "use client";
 
 import type { AgriAiSectionData } from "@/types/agri-ai";
-import FeatureCard from "./FeatureCard";
 import TelemetryDashboardCard from "./TelemetryDashboardCard";
+import { Cpu, Radio, ShieldCheck } from "lucide-react";
 
 interface AgriAiClientProps {
   data: AgriAiSectionData;
 }
 
 export default function AgriAiClient({ data }: AgriAiClientProps) {
-  const { badge, heading, description, features, station, alternativeStations } = data;
+  const { badge, heading, description, station, alternativeStations } = data;
 
   return (
     <section
-      id="agri-ai"
+      id="telemetry"
       aria-labelledby="agri-ai-title"
-      className="relative w-full border-b border-[#d8edd9] bg-[#eaf5ee] py-14 sm:py-20 lg:py-24 transition-colors duration-200 dark:border-emerald-950/70 dark:bg-[#091711]"
+      className="relative w-full bg-background py-16 sm:py-24"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-12">
-          {/* Left Column: Telemetry Engine Value Proposition */}
+        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12">
+          {/* Left Column: Heading and Context */}
           <div className="flex flex-col items-start lg:col-span-5">
-            {/* Top Badge: AgriAI Telemetry Engine */}
-            <div className="inline-flex items-center rounded-full border border-[#cbe6d4] bg-[#dcefe3]/80 px-3.5 py-1 text-xs font-semibold text-[#1e4e37] shadow-2xs dark:border-emerald-800/50 dark:bg-emerald-950/60 dark:text-emerald-200">
-              {badge}
+            <div className="mb-3 flex items-center gap-2">
+              <span className="size-2 rounded-full bg-accent" />
+              <span className="text-xs font-semibold text-muted">
+                {badge}
+              </span>
             </div>
 
-            {/* Main Headline */}
             <h2
               id="agri-ai-title"
-              className="mt-4 text-3xl font-extrabold tracking-tight text-[#0a3826] sm:text-4xl lg:text-[2.75rem] lg:leading-[1.14] dark:text-[#f0fdf4]"
+              className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-foreground"
             >
-              {heading.line1}
-              <br />
-              {heading.line2}
+              {heading.line1} {heading.line2}
             </h2>
 
-            {/* Description Body */}
-            <p className="mt-4 text-sm leading-relaxed text-[#3d5a4c] sm:text-base dark:text-emerald-200/80">
+            <p className="mt-4 text-base leading-relaxed text-muted">
               {description}
             </p>
 
-            {/* 2 Feature Cards Stack */}
-            <div className="mt-6 flex w-full flex-col gap-3.5 sm:mt-8 sm:gap-4">
-              {features.map((feature) => (
-                <FeatureCard key={feature.id} feature={feature} />
-              ))}
+            <div className="mt-8 space-y-4 w-full">
+              <div className="rounded bg-surface p-4 border border-border">
+                <div className="flex items-center gap-2 text-foreground font-semibold text-sm">
+                  <Radio className="size-4 text-accent" />
+                  <span>Calibrated In-Soil Probes</span>
+                </div>
+                <p className="mt-1 text-xs text-muted leading-relaxed">
+                  Sub-surface volumetric water content (VWC) and mineral salinity measured at 15cm and 45cm root depths.
+                </p>
+              </div>
+
+              <div className="rounded bg-surface p-4 border border-border">
+                <div className="flex items-center gap-2 text-foreground font-semibold text-sm">
+                  <Cpu className="size-4 text-accent" />
+                  <span>Ensemble Microclimate ML</span>
+                </div>
+                <p className="mt-1 text-xs text-muted leading-relaxed">
+                  Predicts localized disease susceptibility, thermal degree hours, and optimal harvest windows.
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* Right Column: Live Telemetry & AI Advisory Dashboard Card */}
+          {/* Right Column: Live Telemetry Dashboard */}
           <div className="w-full lg:col-span-7">
             <TelemetryDashboardCard
               station={station}

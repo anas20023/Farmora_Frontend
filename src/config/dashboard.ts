@@ -16,6 +16,7 @@ export const dashboardConfigs: Record<DashboardRole, DashboardConfig> = {
     navigation: [
       { label: "Overview", href: "/dashboard/admin" },
       { label: "Users", href: "/dashboard/admin/users" },
+      { label: "Verification", href: "/dashboard/admin/verification-request" },
       { label: "Analytics", href: "/dashboard/admin/analytics" },
     ],
   },

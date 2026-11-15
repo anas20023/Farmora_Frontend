@@ -30,45 +30,57 @@ export default function FeaturedFarmsClient({
 
   return (
     <section
+      id="farms"
       aria-labelledby="featured-farms-heading"
-      className="relative w-full bg-[#edf7f1] py-12 transition-colors duration-200 sm:py-16 lg:py-20 dark:bg-[#07150e]"
+      className="relative w-full bg-background py-16 sm:py-24"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Header Block with Title & View All Link */}
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-          {/* Left Title & Overline */}
-          <div className="max-w-2xl">
-            <p className="text-xs font-bold tracking-wider text-[#386b51] uppercase sm:text-[13px] dark:text-emerald-400">
-              {overline}
+        {/* Blueprint: The printed guest list */}
+        <div className="mb-14 overflow-hidden rounded bg-surface-secondary/70 p-8 sm:p-12 text-center border border-rule">
+          <div className="mx-auto max-w-2xl">
+            <span className="text-xs font-semibold text-muted">
+              REGISTERED PRODUCER NETWORK
+            </span>
+
+            <h3 className="mt-3 font-display text-2xl sm:text-3xl font-bold text-foreground">
+              The Verified Farms of Farmora
+            </h3>
+
+            <p className="mt-4 font-display text-lg sm:text-xl text-muted leading-relaxed">
+              Barind Tech Farm (Bogura) &nbsp;·&nbsp; Sonargaon Heritage (Narayanganj) &nbsp;·&nbsp; Green Valley Agro (Dinajpur) &nbsp;·&nbsp; Meghna Alluvial Silt Plots (Chandpur) &nbsp;·&nbsp; Rangpur Bio-Canopy Growers
             </p>
 
+            <div className="mt-6 text-xs text-muted">
+              All plots undergo quarterly soil spectroscopic testing and operate solar-powered IoT gateways.
+            </div>
+          </div>
+        </div>
+
+        {/* Section Header */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-10">
+          <div>
             <h2
               id="featured-farms-heading"
-              className="mt-2.5 text-3xl font-extrabold tracking-tight text-[#0d3824] sm:text-4xl lg:text-[2.65rem] lg:leading-[1.15] dark:text-white"
+              className="font-display text-3xl sm:text-4xl font-bold text-foreground"
             >
               {title}
             </h2>
-
-            <p className="mt-3 text-sm leading-relaxed text-[#496154] sm:text-base dark:text-emerald-100/75">
+            <p className="mt-2 text-base text-muted max-w-2xl">
               {description}
             </p>
           </div>
 
-          {/* Right Side View All Link */}
           <Link
             href={viewAllLink.href}
-            className="group inline-flex items-center gap-1.5 self-start text-xs font-semibold text-[#0d3824] transition-colors hover:text-accent hover:underline sm:text-sm lg:self-end dark:text-emerald-300 dark:hover:text-emerald-200"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent hover:underline"
           >
             <span>{viewAllLink.label}</span>
-            <ArrowRight
-              aria-hidden="true"
-              className="size-4 transition-transform group-hover:translate-x-1"
-            />
+            <ArrowRight className="size-4" />
           </Link>
         </div>
 
-        {/* 3-Column Responsive Grid */}
-        <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 sm:mt-10">
+        {/* Farm Cards Grid */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {farms.map((farm) => (
             <FarmCard
               key={farm.id}
@@ -79,7 +91,6 @@ export default function FeaturedFarmsClient({
         </div>
       </div>
 
-      {/* Interactive Farm Profile & Batches Modal */}
       <FarmProfileModal
         farm={selectedFarm}
         isOpen={isModalOpen}

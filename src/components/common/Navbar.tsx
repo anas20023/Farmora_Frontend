@@ -1,121 +1,331 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Avatar, Button, Menu, Popover } from "@heroui/react";
-import { ChevronDown, LayoutDashboard, LogIn, LogOut, Menu as MenuIcon, Moon, Sprout, Sun, UserRound, X } from "lucide-react";
-import { authClient } from "@/lib/auth-client";
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { Avatar, Button, Menu, Popover } from '@heroui/react';
+import {
+    ArrowUpRight,
+    ChevronDown,
+    LayoutDashboard,
+    LogIn,
+    LogOut,
+    Menu as MenuIcon,
+    Moon,
+    ShieldCheck,
+    Sun,
+    UserRound,
+    X,
+} from 'lucide-react';
+import { authClient } from '@/lib/auth-client';
+import Image from 'next/image';
+import RoleApplicationDialog from '@/components/role-application/RoleApplicationDialog';
+import { useRoleApplicationStatus } from '@/components/role-application/RoleApplicationStatus';
+import type { ApplicableRole } from '@/lib/api/role-applications';
 
 const navigation = [
-  { label: "Market Place", href: "/#marketplace" },
-  { label: "How it works", href: "/#how-it-works" },
-  { label: "Contact", href: "/contact" },
+    { label: 'Browse Marketplace', href: '/marketplace' },
+    { label: 'Verified Farms', href: '/farms' },
+    { label: 'Contact', href: '/contact' },
 ];
 
 function initials(name?: string | null) {
-  return (name || "Farmora User").split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase();
+    return (name || 'Farmora User')
+        .split(' ')
+        .map((part) => part[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase();
+}
+
+function asApplicableRole(role?: string | null): ApplicableRole | null {
+    return role === 'farmer' || role === 'buyer' ? role : null;
 }
 
 export default function Navbar() {
-  const router = useRouter();
-  const { data: session } = authClient.useSession();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isDark, setIsDark] = useState(false);
+    const router = useRouter();
+    const { data: session } = authClient.useSession();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isDark, setIsDark] = useState(false);
+    const [isRoleDialogOpen, setIsRoleDialogOpen] = useState(false);
 
-  useEffect(() => {
-    const storedTheme = window.localStorage.getItem("farmora-theme");
-    const shouldUseDark = storedTheme ? storedTheme === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
-    document.documentElement.classList.toggle("dark", shouldUseDark);
-    document.documentElement.dataset.theme = shouldUseDark ? "dark" : "light";
-    const animationFrame = window.requestAnimationFrame(() => setIsDark(shouldUseDark));
+    useEffect(() => {
+        const storedTheme = window.localStorage.getItem('farmora-theme');
+        const shouldUseDark = storedTheme
+            ? storedTheme === 'dark'
+            : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.classList.toggle('dark', shouldUseDark);
+        document.documentElement.dataset.theme = shouldUseDark
+            ? 'dark'
+            : 'light';
+        const animationFrame = window.requestAnimationFrame(() =>
+            setIsDark(shouldUseDark),
+        );
 
-    return () => window.cancelAnimationFrame(animationFrame);
-  }, []);
+        return () => window.cancelAnimationFrame(animationFrame);
+    }, []);
 
-  const toggleTheme = () => {
-    const nextIsDark = !isDark;
-    setIsDark(nextIsDark);
-    document.documentElement.classList.toggle("dark", nextIsDark);
-    document.documentElement.dataset.theme = nextIsDark ? "dark" : "light";
-    window.localStorage.setItem("farmora-theme", nextIsDark ? "dark" : "light");
-  };
+    const toggleTheme = () => {
+        const nextIsDark = !isDark;
+        setIsDark(nextIsDark);
+        document.documentElement.classList.toggle('dark', nextIsDark);
+        document.documentElement.dataset.theme = nextIsDark ? 'dark' : 'light';
+        window.localStorage.setItem(
+            'farmora-theme',
+            nextIsDark ? 'dark' : 'light',
+        );
+    };
 
-  const closeMobileMenu = () => setIsMobileMenuOpen(false);
-  const user = session?.user;
+    const closeMobileMenu = () => setIsMobileMenuOpen(false);
+    const user = session?.user;
+    const currentRole = String(user?.role ?? 'user');
+    const isUserRole = Boolean(user && currentRole === 'user');
+    const wishedRole = asApplicableRole(user?.wished_role);
+    const {
+        application,
+        refresh: refreshApplication,
+        setApplication,
+    } = useRoleApplicationStatus(isUserRole);
+    const applicationStatus = application?.applicationStatus?.toUpperCase();
+    const effectiveRole = wishedRole || asApplicableRole(application?.wishedRole);
+    const isPending = applicationStatus === 'PENDING';
+    const isRejected = applicationStatus === 'REJECTED';
 
-  return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80">
-      <nav aria-label="Main navigation" className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2 text-foreground transition-opacity hover:opacity-80" onClick={closeMobileMenu}>
-          <span className="grid size-9 place-items-center rounded-md bg-accent text-accent-foreground"><Sprout aria-hidden="true" className="size-5" /></span>
-          <span className="text-lg font-semibold tracking-tight">Farmora</span>
-        </Link>
+    const verificationLabel = isPending
+        ? 'Verification pending'
+        : isRejected
+          ? 'Update verification'
+          : effectiveRole
+            ? `Become a Verified ${effectiveRole.charAt(0).toUpperCase() + effectiveRole.slice(1)}`
+            : 'Apply for Role';
 
-        <div className="hidden items-center gap-1 md:flex">
-          {navigation.map((item) => (
-            <Link key={item.label} href={item.href} className="rounded-md px-3 py-2 text-sm font-medium text-muted transition-colors hover:bg-surface-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus">
-              {item.label}
-            </Link>
-          ))}
-        </div>
+    const openRoleApplication = () => {
+        if (isPending) {
+            router.push('/profile');
+            return;
+        }
+        setIsRoleDialogOpen(true);
+    };
 
-        <div className="flex items-center gap-2">
-          <Button aria-label={`Switch to ${isDark ? "light" : "dark"} mode`} isIconOnly size="sm" variant="ghost" onPress={toggleTheme}>
-            {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
-          </Button>
+    return (
+        <header
+            data-ui="true"
+            className="sticky top-0 z-50 w-full bg-background border-b border-border">
+            <nav
+                aria-label="Main navigation"
+                className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+                <Link
+                    href="/"
+                    className="flex items-center gap-2.5 text-foreground transition-opacity hover:opacity-85"
+                    onClick={closeMobileMenu}>
+                    <Image
+                        src="/Logo.png"
+                        alt="Farmora"
+                        width={35}
+                        height={35}
+                    />
+                    <span className="font-display text-2xl font-bold tracking-tight">
+                        Farmora
+                    </span>
+                </Link>
 
-          {user ? (
-            <Popover>
-              <Popover.Trigger>
-                <button aria-label="Open account menu" className="flex items-center gap-1 rounded-full outline-none ring-focus transition-shadow focus-visible:ring-2">
-                  <Avatar size="sm">
-                    {user.image ? <Avatar.Image alt={user.name || "Profile"} src={user.image} /> : null}
-                    <Avatar.Fallback>{initials(user.name)}</Avatar.Fallback>
-                  </Avatar>
-                  <ChevronDown aria-hidden="true" className="hidden size-4 text-muted sm:block" />
-                </button>
-              </Popover.Trigger>
-              <Popover.Content placement="bottom end" className="mt-2 w-56">
-                <Popover.Dialog className="outline-none">
-                  <div className="border-b border-separator px-3 py-2.5">
-                    <p className="truncate text-sm font-medium text-foreground">{user.name || "Farmora User"}</p>
-                    <p className="truncate text-xs text-muted">{user.email}</p>
-                  </div>
-                  <Menu aria-label="Account options" className="p-1">
-                    <Menu.Item id="profile" href="/profile" textValue="Profile"><UserRound className="size-4" />Profile</Menu.Item>
-                    {
-                      session.user.role !== 'user' &&
-                      <Menu.Item id="dashboard" href={`/dashboard/${session.user.role}`} textValue="Dashboard"><LayoutDashboard className="size-4" />Dashboard</Menu.Item>
-                    }
-                    <Menu.Item id="logout" textValue="Log out" onAction={() => authClient.signOut()}><LogOut className="size-4" />Log out</Menu.Item>
-                  </Menu>
-                </Popover.Dialog>
-              </Popover.Content>
-            </Popover>
-          ) : (
-            <Button size="sm" variant="primary" onPress={() => router.push("/login")}>
-              <LogIn aria-hidden="true" className="size-4" /><span className="hidden sm:inline">Join / Login</span><span className="sm:hidden">Join</span>
-            </Button>
-          )}
+                <div className="hidden items-center gap-6 md:flex">
+                    {navigation.map((item) => (
+                        <Link
+                            key={item.label}
+                            href={item.href}
+                            className="text-sm font-medium text-muted transition-colors hover:text-foreground">
+                            {item.label}
+                        </Link>
+                    ))}
+                    {isUserRole && (
+                        <button
+                            type="button"
+                            onClick={openRoleApplication}
+                            className="inline-flex items-center gap-2 rounded bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 cursor-pointer">
+                            <span>{verificationLabel}</span>
+                        </button>
+                    )}
+                </div>
 
-          <Button aria-expanded={isMobileMenuOpen} aria-label="Toggle navigation menu" className="md:hidden" isIconOnly size="sm" variant="ghost" onPress={() => setIsMobileMenuOpen((open) => !open)}>
-            {isMobileMenuOpen ? <X className="size-5" /> : <MenuIcon className="size-5" />}
-          </Button>
-        </div>
-      </nav>
+                <div className="flex items-center gap-3">
+                    <button
+                        type="button"
+                        aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
+                        className="flex size-9 items-center justify-center rounded text-muted transition-colors hover:bg-surface-secondary hover:text-foreground"
+                        onClick={toggleTheme}>
+                        {isDark ? (
+                            <Sun className="size-4" />
+                        ) : (
+                            <Moon className="size-4" />
+                        )}
+                    </button>
 
-      {isMobileMenuOpen ? (
-        <div className="border-t border-border bg-background px-4 py-3 md:hidden">
-          <div className="mx-auto flex max-w-7xl flex-col gap-1 sm:px-2">
-            {navigation.map((item) => (
-              <Link key={item.label} href={item.href} className="rounded-md px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-surface-secondary" onClick={closeMobileMenu}>
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      ) : null}
-    </header>
-  );
+                    {user ? (
+                        <Popover>
+                            <Popover.Trigger>
+                                <button
+                                    type="button"
+                                    aria-label="Open account menu"
+                                    className="flex items-center gap-2 rounded px-2 py-1 text-sm font-medium text-foreground transition-colors hover:bg-surface-secondary">
+                                    <Avatar size="sm">
+                                        {user.image ? (
+                                            <Avatar.Image
+                                                alt={user.name || 'Profile'}
+                                                src={user.image}
+                                            />
+                                        ) : null}
+                                        <Avatar.Fallback>
+                                            {initials(user.name)}
+                                        </Avatar.Fallback>
+                                    </Avatar>
+                                    <span className="hidden sm:inline">
+                                        {user.name || 'Account'}
+                                    </span>
+                                    <ChevronDown
+                                        aria-hidden="true"
+                                        className="size-3.5 text-muted"
+                                    />
+                                </button>
+                            </Popover.Trigger>
+                            <Popover.Content
+                                placement="bottom end"
+                                className="mt-2 w-56 rounded bg-surface p-1 text-surface-foreground border border-border">
+                                <Popover.Dialog className="outline-none">
+                                    <div className="px-3 py-2">
+                                        <p className="truncate text-sm font-medium text-foreground">
+                                            {user.name || 'Farmora User'}
+                                        </p>
+                                        <p className="truncate text-xs text-muted">
+                                            {user.email}
+                                        </p>
+                                    </div>
+                                    <Menu
+                                        aria-label="Account options"
+                                        className="p-1">
+                                        <Menu.Item
+                                            id="profile"
+                                            href="/profile"
+                                            textValue="Profile">
+                                            <UserRound className="size-4" />
+                                            Profile
+                                        </Menu.Item>
+                                        {isUserRole && (
+                                            <Menu.Item
+                                                id="apply-role"
+                                                textValue="Apply for Role"
+                                                onAction={openRoleApplication}>
+                                                <ShieldCheck className="size-4 text-accent" />
+                                                {verificationLabel}
+                                            </Menu.Item>
+                                        )}
+                                        {session.user.role !== 'user' && (
+                                            <Menu.Item
+                                                id="dashboard"
+                                                href={`/dashboard/${session.user.role}`}
+                                                textValue="Dashboard">
+                                                <LayoutDashboard className="size-4" />
+                                                Dashboard
+                                            </Menu.Item>
+                                        )}
+                                        <Menu.Item
+                                            id="logout"
+                                            textValue="Log out"
+                                            onAction={() =>
+                                                authClient.signOut()
+                                            }>
+                                            <LogOut className="size-4" />
+                                            Log out
+                                        </Menu.Item>
+                                    </Menu>
+                                </Popover.Dialog>
+                            </Popover.Content>
+                        </Popover>
+                    ) : (
+                        <Button
+                            size="sm"
+                            className="rounded bg-accent px-4 py-2 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90"
+                            onPress={() => router.push('/login')}>
+                            <LogIn aria-hidden="true" className="size-4" />
+                            <span>Sign In</span>
+                        </Button>
+                    )}
+
+                    <button
+                        type="button"
+                        className="flex size-9 items-center justify-center rounded text-muted md:hidden hover:text-foreground"
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        aria-label="Toggle navigation menu">
+                        {isMobileMenuOpen ? (
+                            <X className="size-5" />
+                        ) : (
+                            <MenuIcon className="size-5" />
+                        )}
+                    </button>
+                </div>
+            </nav>
+
+            {isMobileMenuOpen && (
+                <div
+                    data-ui="true"
+                    className="bg-surface px-4 py-5 md:hidden border-b border-border">
+                    <div className="flex flex-col gap-3">
+                        {navigation.map((item) => (
+                            <Link
+                                key={item.label}
+                                href={item.href}
+                                className="text-base font-medium text-foreground hover:text-accent"
+                                onClick={closeMobileMenu}>
+                                {item.label}
+                            </Link>
+                        ))}
+
+                        {isUserRole && (
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    closeMobileMenu();
+                                    openRoleApplication();
+                                }}
+                                className="inline-flex w-full items-center justify-between rounded bg-accent px-4 py-2.5 text-sm font-semibold text-accent-foreground transition-opacity hover:opacity-90 cursor-pointer">
+                                <span>{verificationLabel}</span>
+                                <ArrowUpRight className="size-4" />
+                            </button>
+                        )}
+                        {user && (
+                            <Link
+                                href="/profile"
+                                className="text-base font-medium text-foreground hover:text-accent"
+                                onClick={closeMobileMenu}>
+                                Profile
+                            </Link>
+                        )}
+                        {!user && (
+                            <Button
+                                size="sm"
+                                className="mt-2 w-full rounded bg-accent text-accent-foreground"
+                                onPress={() => {
+                                    closeMobileMenu();
+                                    router.push('/login');
+                                }}>
+                                Sign In
+                            </Button>
+                        )}
+                    </div>
+                </div>
+            )}
+            {isUserRole && (
+                <RoleApplicationDialog
+                    isOpen={isRoleDialogOpen}
+                    role={effectiveRole}
+                    canSelectRole={!wishedRole}
+                    onClose={() => setIsRoleDialogOpen(false)}
+                    onSubmitted={(nextApplication) => {
+                        setApplication(nextApplication);
+                        void refreshApplication();
+                    }}
+                />
+            )}
+        </header>
+    );
 }

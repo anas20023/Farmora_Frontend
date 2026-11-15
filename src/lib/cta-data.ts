@@ -2,26 +2,26 @@ import type { CtaData } from "@/types/cta";
 
 /**
  * Server-side data provider for the Farmora Call To Action (CTA) section.
- * Supplies exact brand proposition copy, feature commitments, action links,
- * and dummy telemetry/escrow terms data.
+ * Supplies brand proposition copy, feature commitments, action links,
+ * and telemetry/escrow terms data.
  */
 export async function getCtaData(): Promise<CtaData> {
   return {
     badge: {
-      label: "Empowering Bangladesh Growers",
+      label: "Direct Agricultural Infrastructure",
       iconName: "gem",
     },
     headline:
-      "Earn up to 35% higher margins by eliminating middlemen with zero listing fees and free IoT sensor deployment.",
+      "Eliminate middlemen markups with direct plot telemetry and verified escrow settlements.",
     highlightMargin: "35%",
     description:
-      "We deliver telemetry hardware straight to your plot, connect your yield to verified wholesale and institutional buyers, and guarantee prompt bank transfers via Bangladesh Bank-authorized escrow upon delivery.",
+      "We deliver telemetry hardware straight to your plot, connect your harvest to verified buyers, and guarantee prompt bank transfers via escrow upon weight receipt.",
     features: [
       {
         id: "feat-iot",
         text: "Free IoT Field Installation",
         tooltipText:
-          "Complimentary solar-powered soil moisture and canopy telemetry units deployed directly to your farm plot within 72 hours.",
+          "Solar-powered soil moisture and canopy telemetry units deployed directly to your farm plot within 72 hours.",
       },
       {
         id: "feat-commission",
@@ -33,7 +33,7 @@ export async function getCtaData(): Promise<CtaData> {
         id: "feat-agronomist",
         text: "Agronomist On-Call Support",
         tooltipText:
-          "24/7 localized agronomist consultations, disease prevention alerts, and harvest timing guidance in Bengali.",
+          "24/7 localized consultations, disease prevention alerts, and harvest timing guidance.",
       },
     ],
     primaryAction: {
@@ -48,40 +48,32 @@ export async function getCtaData(): Promise<CtaData> {
     },
     termsModal: {
       title: "Farmora Grower Agreement & Platform Terms",
-      subtitle:
-        "Transparent, farmer-first trade rules backed by digital smart contracts and verified banking escrow.",
+      subtitle: "Regulated Agricultural Escrow and IoT Telemetry SLA",
       terms: [
         {
           id: "term-1",
-          title: "Zero-Cost IoT Edge Sensor Deployment",
+          title: "1. Hardware Deployment & Telemetry Ownership",
           description:
-            "Farmora provides and installs solar-powered telemetry sensors at 0 ৳ deposit across all 64 districts in Bangladesh.",
-          badge: "Hardware Kit",
+            "Farmora IoT Sensor probes remain property of Farmora Corporation and are serviced under lifetime warranty during active harvest listing cycles.",
+          badge: "Hardware SLA",
         },
         {
           id: "term-2",
-          title: "Bank-Authorized Escrow Settlement",
+          title: "2. Escrow & Payout Settlement",
           description:
-            "Buyer payment is locked in escrow prior to dispatch and automatically disbursed within 24 hours of delivery and quality verification.",
-          badge: "24h Payout",
+            "All batch funds are placed in regulated escrow at pre-order confirmation and released to the farmer's verified bank account within 2 hours of delivery confirmation.",
+          badge: "Instant Payout",
         },
         {
           id: "term-3",
-          title: "Transparent Fair Market Pricing",
+          title: "3. Quality Verification & Telemetry Standards",
           description:
-            "No middleman brokerage cuts. Producers receive 100% of the agreed batch price with full digital weight receipts.",
-          badge: "Direct Trade",
-        },
-        {
-          id: "term-4",
-          title: "Institutional Buyer Verification",
-          description:
-            "Trade exclusively with certified wholesale networks, corporate agro-processors, and accredited export houses.",
-          badge: "KYC Verified",
+            "Produce must align with soil moisture and maturity curves logged by in-field telemetry during the 7-day harvest countdown window.",
+          badge: "Quality SLA",
         },
       ],
       escrowNote:
-        "Settlement escrow operations comply with Bangladesh Bank guidelines for digital commercial agriculture settlement.",
+        "All batch payments are held in escrow under scheduled banking regulations.",
     },
   };
 }
