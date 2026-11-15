@@ -61,6 +61,7 @@ export async function getFooterData(): Promise<FooterData> {
         title: "COMPANY",
         links: [
           { label: "About Farmora", href: "#about" },
+          { label: "Contact & Support", href: "/contact" },
           { label: "Trust & Traceability", href: "#trust" },
           { label: "Institutional Buyers", href: "#buyers" },
           { label: "Privacy Policy", href: "#privacy" },
